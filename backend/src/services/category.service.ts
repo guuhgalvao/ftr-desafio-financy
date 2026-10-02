@@ -116,10 +116,11 @@ export async function createCategory(userId: string, input: CategoryInput) {
 }
 
 export async function updateCategory(userId: string, id: string, input: CategoryInput) {
-  const data = parseInput(categorySchema, input)
-
+  // Ownership comes first: someone else's id answers NOT_FOUND whatever the payload.
   const existing = await prisma.category.findFirst({ where: { id, userId } })
   if (!existing) throw notFound(NOT_FOUND)
+
+  const data = parseInput(categorySchema, input)
 
   try {
     const category = await prisma.category.update({ where: { id, userId }, data })
