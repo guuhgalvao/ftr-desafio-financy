@@ -15,7 +15,7 @@ type Category {
   icon: String!
   id: ID!
   title: String!
-  totalAmount: Int!
+  totalAmount: Float!
   transactionsCount: Int!
   updatedAt: DateTimeISO!
 }

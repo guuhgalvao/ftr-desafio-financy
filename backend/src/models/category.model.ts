@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from 'type-graphql'
+import { Field, Float, ID, Int, ObjectType } from 'type-graphql'
 
 @ObjectType()
 export class Category {
@@ -20,7 +20,8 @@ export class Category {
   @Field(() => Int)
   transactionsCount!: number
 
-  @Field(() => Int)
+  // Float, not Int: a sum of amounts can exceed the 32-bit range of the GraphQL Int.
+  @Field(() => Float)
   totalAmount!: number
 
   @Field(() => Date)
