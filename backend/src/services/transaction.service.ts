@@ -1,16 +1,34 @@
 import type { Prisma } from '@prisma/client'
 import { z } from 'zod'
 import type { PaginationInput } from '../dtos/input/pagination.input'
+import type { TransactionInput } from '../dtos/input/transaction.input'
 import type { TransactionFilterInput } from '../dtos/input/transaction-filter.input'
 import { notFound, parseInput } from '../graphql/errors'
 import { dateSchema, fromDbDate, toDbDate } from '../lib/date'
 import { prisma } from '../lib/prisma'
 import { toTitleKey } from '../lib/title-key'
-import { EMPTY_STATS, getStatsByCategory } from './category.service'
+import { EMPTY_STATS, getStatsByCategory, isPrismaError } from './category.service'
 
 const NOT_FOUND = 'Transação não encontrada'
+const CATEGORY_NOT_FOUND = 'Categoria não encontrada'
 
 const TYPES = ['INCOME', 'EXPENSE'] as const
+
+const transactionSchema = z.object({
+  description: z
+    .string()
+    .trim()
+    .min(1, { error: 'A descrição deve ter entre 1 e 100 caracteres' })
+    .max(100, { error: 'A descrição deve ter entre 1 e 100 caracteres' }),
+  // Cents. Always positive: the sign comes from the type.
+  amount: z
+    .int({ error: 'O valor deve estar entre R$ 0,01 e R$ 10.000.000,00' })
+    .min(1, { error: 'O valor deve estar entre R$ 0,01 e R$ 10.000.000,00' })
+    .max(1_000_000_000, { error: 'O valor deve estar entre R$ 0,01 e R$ 10.000.000,00' }),
+  type: z.enum(TYPES, { error: 'Tipo inválido' }),
+  date: dateSchema,
+  categoryId: z.string(),
+})
 
 const filterSchema = z
   .object({
@@ -130,4 +148,60 @@ export async function getTransaction(userId: string, id: string) {
   if (!transaction) throw notFound(NOT_FOUND)
 
   return toTransaction(transaction, stats)
+}
+
+// A category of another user answers exactly like one that doesn't exist.
+async function assertCategoryOwnership(userId: string, categoryId: string) {
+  const category = await prisma.category.findFirst({
+    where: { id: categoryId, userId },
+    select: { id: true },
+  })
+  if (!category) throw notFound(CATEGORY_NOT_FOUND)
+}
+
+export async function createTransaction(userId: string, input: TransactionInput) {
+  const { date, ...data } = parseInput(transactionSchema, input)
+  await assertCategoryOwnership(userId, data.categoryId)
+
+  const transaction = await prisma.transaction.create({
+    data: { ...data, date: toDbDate(date), userId },
+    include,
+  })
+  // Stats are read after the write so the category already counts this transaction.
+  return toTransaction(transaction, await getStatsByCategory(userId))
+}
+
+export async function updateTransaction(userId: string, id: string, input: TransactionInput) {
+  // Ownership comes first: someone else's id answers NOT_FOUND whatever the payload.
+  const existing = await prisma.transaction.findFirst({ where: { id, userId } })
+  if (!existing) throw notFound(NOT_FOUND)
+
+  const { date, ...data } = parseInput(transactionSchema, input)
+  await assertCategoryOwnership(userId, data.categoryId)
+
+  try {
+    const transaction = await prisma.transaction.update({
+      where: { id, userId },
+      data: { ...data, date: toDbDate(date) },
+      include,
+    })
+    return toTransaction(transaction, await getStatsByCategory(userId))
+  } catch (error) {
+    // Deleted between the lookup and the update.
+    if (isPrismaError(error, 'P2025')) throw notFound(NOT_FOUND)
+    throw error
+  }
+}
+
+export async function deleteTransaction(userId: string, id: string) {
+  const existing = await prisma.transaction.findFirst({ where: { id, userId } })
+  if (!existing) throw notFound(NOT_FOUND)
+
+  try {
+    await prisma.transaction.delete({ where: { id, userId } })
+  } catch (error) {
+    if (isPrismaError(error, 'P2025')) throw notFound(NOT_FOUND)
+    throw error
+  }
+  return true
 }

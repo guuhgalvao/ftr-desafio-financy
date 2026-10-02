@@ -39,11 +39,14 @@ input LoginInput {
 
 type Mutation {
   createCategory(data: CategoryInput!): Category!
+  createTransaction(data: TransactionInput!): Transaction!
   deleteCategory(id: ID!): Boolean!
+  deleteTransaction(id: ID!): Boolean!
   login(data: LoginInput!): AuthPayload!
   register(data: RegisterInput!): AuthPayload!
   updateCategory(data: CategoryInput!, id: ID!): Category!
   updateProfile(data: UpdateProfileInput!): User!
+  updateTransaction(data: TransactionInput!, id: ID!): Transaction!
 }
 
 input PaginationInput {
@@ -82,6 +85,14 @@ input TransactionFilterInput {
   search: String
   to: String
   type: TransactionType
+}
+
+input TransactionInput {
+  amount: Int!
+  categoryId: ID!
+  date: String!
+  description: String!
+  type: TransactionType!
 }
 
 type TransactionPage {

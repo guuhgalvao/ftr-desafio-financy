@@ -1,5 +1,6 @@
-import { Arg, Authorized, Ctx, ID, Query, Resolver } from 'type-graphql'
+import { Arg, Authorized, Ctx, ID, Mutation, Query, Resolver } from 'type-graphql'
 import { PaginationInput } from '../dtos/input/pagination.input'
+import { TransactionInput } from '../dtos/input/transaction.input'
 import { TransactionFilterInput } from '../dtos/input/transaction-filter.input'
 import type { Context } from '../graphql/context'
 import { Transaction } from '../models/transaction.model'
@@ -25,5 +26,30 @@ export class TransactionResolver {
   @Query(() => Transaction)
   transaction(@Arg('id', () => ID) id: string, @Ctx() { userId }: Context) {
     return transactionService.getTransaction(userId as string, id)
+  }
+
+  @Authorized()
+  @Mutation(() => Transaction)
+  createTransaction(
+    @Arg('data', () => TransactionInput) data: TransactionInput,
+    @Ctx() { userId }: Context,
+  ) {
+    return transactionService.createTransaction(userId as string, data)
+  }
+
+  @Authorized()
+  @Mutation(() => Transaction)
+  updateTransaction(
+    @Arg('id', () => ID) id: string,
+    @Arg('data', () => TransactionInput) data: TransactionInput,
+    @Ctx() { userId }: Context,
+  ) {
+    return transactionService.updateTransaction(userId as string, id, data)
+  }
+
+  @Authorized()
+  @Mutation(() => Boolean)
+  deleteTransaction(@Arg('id', () => ID) id: string, @Ctx() { userId }: Context) {
+    return transactionService.deleteTransaction(userId as string, id)
   }
 }
