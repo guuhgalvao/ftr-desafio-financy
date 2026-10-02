@@ -3,6 +3,7 @@ import { z } from 'zod'
 import type { CategoryInput } from '../dtos/input/category.input'
 import { conflict, notFound, parseInput } from '../graphql/errors'
 import { prisma } from '../lib/prisma'
+import { toTitleKey } from '../lib/title-key'
 
 const NOT_FOUND = 'Categoria não encontrada'
 const DUPLICATE_TITLE = 'Já existe uma categoria com esse nome'
@@ -107,7 +108,9 @@ export async function createCategory(userId: string, input: CategoryInput) {
   const data = parseInput(categorySchema, input)
 
   try {
-    const category = await prisma.category.create({ data: { ...data, userId } })
+    const category = await prisma.category.create({
+      data: { ...data, titleKey: toTitleKey(data.title), userId },
+    })
     return { ...category, ...EMPTY_STATS }
   } catch (error) {
     if (isPrismaError(error, 'P2002')) throw conflict(DUPLICATE_TITLE)
@@ -123,7 +126,10 @@ export async function updateCategory(userId: string, id: string, input: Category
   const data = parseInput(categorySchema, input)
 
   try {
-    const category = await prisma.category.update({ where: { id, userId }, data })
+    const category = await prisma.category.update({
+      where: { id, userId },
+      data: { ...data, titleKey: toTitleKey(data.title) },
+    })
     return { ...category, ...(await getCategoryStats(userId, id)) }
   } catch (error) {
     if (isPrismaError(error, 'P2002')) throw conflict(DUPLICATE_TITLE)

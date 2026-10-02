@@ -1,6 +1,7 @@
 import { PrismaClient, type TransactionType } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { toDbDate } from '../src/lib/date'
+import { toTitleKey } from '../src/lib/title-key'
 
 const prisma = new PrismaClient()
 
@@ -195,7 +196,9 @@ async function main() {
 
   const categoryIds = new Map<CategoryTitle, string>()
   for (const category of CATEGORIES) {
-    const created = await prisma.category.create({ data: { ...category, userId: user.id } })
+    const created = await prisma.category.create({
+      data: { ...category, titleKey: toTitleKey(category.title), userId: user.id },
+    })
     categoryIds.set(category.title, created.id)
   }
 

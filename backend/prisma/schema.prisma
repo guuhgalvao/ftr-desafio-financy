@@ -27,6 +27,8 @@ model User {
 model Category {
   id          String   @id @default(uuid())
   title       String
+  // Title lowercased and without accents (see src/lib/title-key.ts). Never exposed by the API.
+  titleKey    String
   description String?
   icon        String
   color       String
@@ -37,7 +39,7 @@ model Category {
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
-  @@unique([userId, title])
+  @@unique([userId, titleKey])
 }
 
 model Transaction {
