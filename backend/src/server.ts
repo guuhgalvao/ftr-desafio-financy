@@ -10,12 +10,13 @@ import { authChecker } from './graphql/auth-checker'
 import { buildContext, type Context } from './graphql/context'
 import { formatError } from './graphql/format-error'
 import { CategoryResolver } from './resolvers/category.resolver'
+import { TransactionResolver } from './resolvers/transaction.resolver'
 import { UserResolver } from './resolvers/user.resolver'
 
 const PORT = 4000
 
 const schema = await buildSchema({
-  resolvers: [UserResolver, CategoryResolver],
+  resolvers: [UserResolver, CategoryResolver, TransactionResolver],
   authChecker,
   validate: false,
   emitSchemaFile: path.resolve(import.meta.dirname, '../schema.graphql'),

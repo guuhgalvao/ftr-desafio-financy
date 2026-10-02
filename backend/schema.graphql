@@ -46,16 +46,54 @@ type Mutation {
   updateProfile(data: UpdateProfileInput!): User!
 }
 
+input PaginationInput {
+  page: Int! = 1
+  perPage: Int! = 10
+}
+
 type Query {
   categories: [Category!]!
   category(id: ID!): Category!
   me: User!
+  transaction(id: ID!): Transaction!
+  transactions(filter: TransactionFilterInput, pagination: PaginationInput): TransactionPage!
 }
 
 input RegisterInput {
   email: String!
   name: String!
   password: String!
+}
+
+type Transaction {
+  amount: Int!
+  category: Category
+  createdAt: DateTimeISO!
+  date: String!
+  description: String!
+  id: ID!
+  type: TransactionType!
+  updatedAt: DateTimeISO!
+}
+
+input TransactionFilterInput {
+  categoryId: ID
+  from: String
+  search: String
+  to: String
+  type: TransactionType
+}
+
+type TransactionPage {
+  items: [Transaction!]!
+  page: Int!
+  perPage: Int!
+  total: Int!
+}
+
+enum TransactionType {
+  EXPENSE
+  INCOME
 }
 
 input UpdateProfileInput {

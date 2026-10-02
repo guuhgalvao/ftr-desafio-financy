@@ -50,13 +50,13 @@ const categorySchema = z.object({
   color: z.enum(COLORS, { error: 'Cor inválida' }),
 })
 
-function isPrismaError(error: unknown, code: string) {
+export function isPrismaError(error: unknown, code: string) {
   return error instanceof Prisma.PrismaClientKnownRequestError && error.code === code
 }
 
 type CategoryStats = { transactionsCount: number; totalAmount: number }
 
-const EMPTY_STATS: CategoryStats = { transactionsCount: 0, totalAmount: 0 }
+export const EMPTY_STATS: CategoryStats = { transactionsCount: 0, totalAmount: 0 }
 
 // Amounts are always positive, so the plain sum is already the absolute total.
 // One query for every category of the user, whatever the number of categories.
