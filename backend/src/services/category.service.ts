@@ -35,7 +35,10 @@ const categorySchema = z.object({
     .string()
     .trim()
     .min(1, { error: 'O título deve ter entre 1 e 50 caracteres' })
-    .max(50, { error: 'O título deve ter entre 1 e 50 caracteres' }),
+    .max(50, { error: 'O título deve ter entre 1 e 50 caracteres' })
+    // NFC first, so an accent typed as a combining mark still counts as part of its letter.
+    .normalize('NFC')
+    .regex(/^[\p{L}\p{N} ]+$/u, { error: 'O título deve ter apenas letras, números e espaços' }),
   // An empty description is stored as null.
   description: z
     .string()
