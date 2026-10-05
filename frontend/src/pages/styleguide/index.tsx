@@ -35,7 +35,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Toaster } from '@/components/ui/sonner'
 import { CATEGORY_COLORS, CATEGORY_ICON_NAMES } from '@/lib/categories'
 import { formatDate, toISODate } from '@/lib/format'
 
@@ -72,7 +71,6 @@ export default function StyleguidePage() {
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-12 px-4 py-12">
-      <Toaster />
       <header className="flex flex-col gap-4">
         <Logo />
         <h1 className="font-bold text-2xl text-gray-800">Componentes</h1>
