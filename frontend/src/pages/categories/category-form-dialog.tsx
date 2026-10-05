@@ -1,7 +1,7 @@
 import { useApolloClient, useMutation } from '@apollo/client/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { Button } from '@/components/button'
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import { CREATE_CATEGORY_MUTATION } from '@/graphql/mutations/create-category'
 import { UPDATE_CATEGORY_MUTATION } from '@/graphql/mutations/update-category'
-import { CATEGORIES_QUERY, type CategoryItem } from '@/graphql/queries/categories'
+import { type CategoryItem, refetchCategories } from '@/graphql/queries/categories'
 import {
   CATEGORY_COLOR_LABELS,
   CATEGORY_COLORS,
@@ -40,8 +40,11 @@ type CategoryFormDialogProps = {
 }
 
 export function CategoryFormDialog({ open, category, onOpenChange }: CategoryFormDialogProps) {
+  const [isSaving, setIsSaving] = useState(false)
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    // Durante o envio o modal não fecha (x, Esc, overlay): um erro da API precisa dele aberto.
+    <Dialog open={open} onOpenChange={(next) => !isSaving && onOpenChange(next)}>
       <DialogContent>
         <DialogHeader>
           <div className="flex flex-col gap-0.5">
@@ -49,11 +52,15 @@ export function CategoryFormDialog({ open, category, onOpenChange }: CategoryFor
             <DialogDescription>Organize suas transações com categorias</DialogDescription>
           </div>
           <DialogClose asChild>
-            <IconButton icon={X} aria-label="Fechar" />
+            <IconButton icon={X} aria-label="Fechar" disabled={isSaving} />
           </DialogClose>
         </DialogHeader>
         {/* Montado só com o modal aberto: cada abertura começa com os valores iniciais. */}
-        <CategoryForm category={category} onDone={() => onOpenChange(false)} />
+        <CategoryForm
+          category={category}
+          onSavingChange={setIsSaving}
+          onDone={() => onOpenChange(false)}
+        />
       </DialogContent>
     </Dialog>
   )
@@ -68,12 +75,16 @@ const optionClasses = cn(
   'has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand-base has-[:focus-visible]:outline-offset-2',
 )
 
-const refetchCategories = { refetchQueries: [CATEGORIES_QUERY], awaitRefetchQueries: true }
+type CategoryFormProps = {
+  category: CategoryItem | null
+  onSavingChange: (isSaving: boolean) => void
+  onDone: () => void
+}
 
-function CategoryForm({ category, onDone }: { category: CategoryItem | null; onDone: () => void }) {
+function CategoryForm({ category, onSavingChange, onDone }: CategoryFormProps) {
   const client = useApolloClient()
-  const [createCategory] = useMutation(CREATE_CATEGORY_MUTATION, refetchCategories)
-  const [updateCategory] = useMutation(UPDATE_CATEGORY_MUTATION, refetchCategories)
+  const [createCategory] = useMutation(CREATE_CATEGORY_MUTATION)
+  const [updateCategory] = useMutation(UPDATE_CATEGORY_MUTATION)
 
   const icon = category?.icon
   const color = category?.color
@@ -101,15 +112,15 @@ function CategoryForm({ category, onDone }: { category: CategoryItem | null; onD
 
   async function onSubmit(data: CategoryFormData) {
     const input = { ...data, description: data.description || null }
+    onSavingChange(true)
 
     try {
-      if (category) {
-        await updateCategory({ variables: { id: category.id, data: input } })
-        toast.success('Categoria atualizada com sucesso')
-      } else {
-        await createCategory({ variables: { data: input } })
-        toast.success('Categoria criada com sucesso')
-      }
+      if (category) await updateCategory({ variables: { id: category.id, data: input } })
+      else await createCategory({ variables: { data: input } })
+
+      // O modal só fecha com a lista e os resumos já atualizados.
+      await refetchCategories(client)
+      toast.success(category ? 'Categoria atualizada com sucesso' : 'Categoria criada com sucesso')
       onDone()
     } catch (error) {
       const code = getGraphQLErrorCode(error)
@@ -121,7 +132,7 @@ function CategoryForm({ category, onDone }: { category: CategoryItem | null; onD
 
       // A categoria foi excluída em outro lugar: não há mais o que editar.
       if (code === 'NOT_FOUND') {
-        void client.refetchQueries({ include: [CATEGORIES_QUERY] })
+        void refetchCategories(client)
         onDone()
         return
       }
@@ -130,6 +141,8 @@ function CategoryForm({ category, onDone }: { category: CategoryItem | null; onD
       if (field && field in data) {
         setError(field as keyof CategoryFormData, { message }, { shouldFocus: true })
       }
+    } finally {
+      onSavingChange(false)
     }
   }
 

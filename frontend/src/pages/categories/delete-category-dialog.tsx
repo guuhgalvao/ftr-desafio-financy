@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { DELETE_CATEGORY_MUTATION } from '@/graphql/mutations/delete-category'
-import { CATEGORIES_QUERY, type CategoryItem } from '@/graphql/queries/categories'
+import { type CategoryItem, refetchCategories } from '@/graphql/queries/categories'
 import { getErrorMessage, getGraphQLErrorCode } from '@/lib/errors'
 
 type DeleteCategoryDialogProps = {
@@ -33,8 +33,6 @@ export function DeleteCategoryDialog({ open, category, onOpenChange }: DeleteCat
   const client = useApolloClient()
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteCategory] = useMutation(DELETE_CATEGORY_MUTATION, {
-    refetchQueries: [CATEGORIES_QUERY],
-    awaitRefetchQueries: true,
     // As transações em cache ainda apontam para a categoria excluída.
     update(cache) {
       cache.evict({ id: 'ROOT_QUERY', fieldName: 'transactions' })
@@ -48,6 +46,8 @@ export function DeleteCategoryDialog({ open, category, onOpenChange }: DeleteCat
 
     try {
       await deleteCategory({ variables: { id: category.id } })
+      // O diálogo só fecha com a lista e os resumos já atualizados.
+      await refetchCategories(client)
       toast.success('Categoria excluída com sucesso')
       onOpenChange(false)
     } catch (error) {
@@ -59,7 +59,7 @@ export function DeleteCategoryDialog({ open, category, onOpenChange }: DeleteCat
 
       // Já tinha sido excluída em outro lugar: a lista está desatualizada.
       if (code === 'NOT_FOUND') {
-        void client.refetchQueries({ include: [CATEGORIES_QUERY] })
+        void refetchCategories(client)
         onOpenChange(false)
       }
     } finally {

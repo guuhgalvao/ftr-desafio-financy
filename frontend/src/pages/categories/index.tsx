@@ -71,7 +71,8 @@ export function CategoriesPage() {
         </>
       ) : error ? (
         <Message text={getErrorMessage(error)}>
-          <Link onClick={() => void refetch()}>Tentar novamente</Link>
+          {/* Uma nova falha já aparece pelo `error` da query. */}
+          <Link onClick={() => void refetch().catch(() => {})}>Tentar novamente</Link>
         </Message>
       ) : (
         <>
