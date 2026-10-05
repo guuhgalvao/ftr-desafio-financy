@@ -27,10 +27,15 @@ const errorLink = new ErrorLink(({ error, operation }) => {
   const { sessionToken } = operation.getContext()
   if (!sessionToken || sessionToken !== useAuthStore.getState().token) return
 
-  useAuthStore.getState().signOut()
-  void apolloClient.clearStore()
+  endSession()
   toast.error('Sua sessão expirou')
 })
+
+/** Limpa o token, o usuário e o cache do Apollo. As rotas voltam para `/` por dependerem do token. */
+export function endSession() {
+  useAuthStore.getState().signOut()
+  void apolloClient.clearStore()
+}
 
 export const apolloClient = new ApolloClient({
   link: ApolloLink.from([errorLink, authLink, httpLink]),

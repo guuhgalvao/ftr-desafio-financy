@@ -14,9 +14,15 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": typeof types.LoginDocument,
+    "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": typeof types.RegisterDocument,
+    "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n": typeof types.UpdateProfileDocument,
     "\n  query Me {\n    me {\n      id\n      name\n      email\n      createdAt\n    }\n  }\n": typeof types.MeDocument,
 };
 const documents: Documents = {
+    "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": types.LoginDocument,
+    "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": types.RegisterDocument,
+    "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n": types.UpdateProfileDocument,
     "\n  query Me {\n    me {\n      id\n      name\n      email\n      createdAt\n    }\n  }\n": types.MeDocument,
 };
 
@@ -34,6 +40,18 @@ const documents: Documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
