@@ -42,6 +42,7 @@ export type CategoryIconName = keyof typeof CATEGORY_ICONS
 
 export const CATEGORY_ICON_NAMES = Object.keys(CATEGORY_ICONS) as CategoryIconName[]
 
+// A 1ª linha é a do Figma; as outras duas são cores extras, fora do design.
 export const CATEGORY_COLORS = [
   'green',
   'blue',
@@ -50,6 +51,20 @@ export const CATEGORY_COLORS = [
   'red',
   'orange',
   'yellow',
+  'teal',
+  'sky',
+  'violet',
+  'fuchsia',
+  'rose',
+  'amber',
+  'lime',
+  'emerald',
+  'cyan',
+  'indigo',
+  'navy',
+  'maroon',
+  'brown',
+  'olive',
 ] as const
 
 export type CategoryColor = (typeof CATEGORY_COLORS)[number]
@@ -103,6 +118,90 @@ export const COLOR_CLASSES: Record<TagColor, ColorClasses> = {
     icon: 'text-yellow-base',
     swatch: 'bg-yellow-base',
   },
+  teal: {
+    tag: 'bg-teal-light text-teal-dark',
+    box: 'bg-teal-light',
+    icon: 'text-teal-base',
+    swatch: 'bg-teal-base',
+  },
+  sky: {
+    tag: 'bg-sky-light text-sky-dark',
+    box: 'bg-sky-light',
+    icon: 'text-sky-base',
+    swatch: 'bg-sky-base',
+  },
+  violet: {
+    tag: 'bg-violet-light text-violet-dark',
+    box: 'bg-violet-light',
+    icon: 'text-violet-base',
+    swatch: 'bg-violet-base',
+  },
+  fuchsia: {
+    tag: 'bg-fuchsia-light text-fuchsia-dark',
+    box: 'bg-fuchsia-light',
+    icon: 'text-fuchsia-base',
+    swatch: 'bg-fuchsia-base',
+  },
+  rose: {
+    tag: 'bg-rose-light text-rose-dark',
+    box: 'bg-rose-light',
+    icon: 'text-rose-base',
+    swatch: 'bg-rose-base',
+  },
+  amber: {
+    tag: 'bg-amber-light text-amber-dark',
+    box: 'bg-amber-light',
+    icon: 'text-amber-base',
+    swatch: 'bg-amber-base',
+  },
+  lime: {
+    tag: 'bg-lime-light text-lime-dark',
+    box: 'bg-lime-light',
+    icon: 'text-lime-base',
+    swatch: 'bg-lime-base',
+  },
+  emerald: {
+    tag: 'bg-emerald-light text-emerald-dark',
+    box: 'bg-emerald-light',
+    icon: 'text-emerald-base',
+    swatch: 'bg-emerald-base',
+  },
+  cyan: {
+    tag: 'bg-cyan-light text-cyan-dark',
+    box: 'bg-cyan-light',
+    icon: 'text-cyan-base',
+    swatch: 'bg-cyan-base',
+  },
+  indigo: {
+    tag: 'bg-indigo-light text-indigo-dark',
+    box: 'bg-indigo-light',
+    icon: 'text-indigo-base',
+    swatch: 'bg-indigo-base',
+  },
+  navy: {
+    tag: 'bg-navy-light text-navy-dark',
+    box: 'bg-navy-light',
+    icon: 'text-navy-base',
+    swatch: 'bg-navy-base',
+  },
+  maroon: {
+    tag: 'bg-maroon-light text-maroon-dark',
+    box: 'bg-maroon-light',
+    icon: 'text-maroon-base',
+    swatch: 'bg-maroon-base',
+  },
+  brown: {
+    tag: 'bg-brown-light text-brown-dark',
+    box: 'bg-brown-light',
+    icon: 'text-brown-base',
+    swatch: 'bg-brown-base',
+  },
+  olive: {
+    tag: 'bg-olive-light text-olive-dark',
+    box: 'bg-olive-light',
+    icon: 'text-olive-base',
+    swatch: 'bg-olive-base',
+  },
   gray: {
     tag: 'bg-gray-200 text-gray-700',
     box: 'bg-gray-200',
@@ -139,6 +238,20 @@ export const CATEGORY_COLOR_LABELS: Record<CategoryColor, string> = {
   red: 'Vermelho',
   orange: 'Laranja',
   yellow: 'Amarelo',
+  teal: 'Verde-azulado',
+  sky: 'Azul-céu',
+  violet: 'Violeta',
+  fuchsia: 'Fúcsia',
+  rose: 'Rosa-avermelhado',
+  amber: 'Âmbar',
+  lime: 'Verde-limão',
+  emerald: 'Esmeralda',
+  cyan: 'Ciano',
+  indigo: 'Índigo',
+  navy: 'Azul-marinho',
+  maroon: 'Vinho',
+  brown: 'Marrom',
+  olive: 'Verde-oliva',
 }
 
 /**

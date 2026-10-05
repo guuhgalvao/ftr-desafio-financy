@@ -47,6 +47,50 @@
   --color-yellow-base: #ca8a04;
   --color-yellow-light: #f7f3ca;
 
+  /* fora do Figma: 14 cores extras de categoria (2ª e 3ª linhas do seletor) */
+  --color-teal-dark: #0f766e;
+  --color-teal-base: #0d9488;
+  --color-teal-light: #ccfbf1;
+  --color-sky-dark: #0369a1;
+  --color-sky-base: #0284c7;
+  --color-sky-light: #e0f2fe;
+  --color-violet-dark: #6d28d9;
+  --color-violet-base: #7c3aed;
+  --color-violet-light: #ede9fe;
+  --color-fuchsia-dark: #a21caf;
+  --color-fuchsia-base: #c026d3;
+  --color-fuchsia-light: #fae8ff;
+  --color-rose-dark: #be123c;
+  --color-rose-base: #e11d48;
+  --color-rose-light: #ffe4e6;
+  --color-amber-dark: #b45309;
+  --color-amber-base: #f59e0b;
+  --color-amber-light: #fef3c7;
+  --color-lime-dark: #4d7c0f;
+  --color-lime-base: #65a30d;
+  --color-lime-light: #ecfccb;
+  --color-emerald-dark: #047857;
+  --color-emerald-base: #059669;
+  --color-emerald-light: #d1fae5;
+  --color-cyan-dark: #0e7490;
+  --color-cyan-base: #0891b2;
+  --color-cyan-light: #cffafe;
+  --color-indigo-dark: #4338ca;
+  --color-indigo-base: #4f46e5;
+  --color-indigo-light: #e0e7ff;
+  --color-navy-dark: #1e3a8a;
+  --color-navy-base: #1e40af;
+  --color-navy-light: #dce6f9;
+  --color-maroon-dark: #881337;
+  --color-maroon-base: #9f1239;
+  --color-maroon-light: #f9dde3;
+  --color-brown-dark: #78350f;
+  --color-brown-base: #92400e;
+  --color-brown-light: #f3e3d3;
+  --color-olive-dark: #4f5510;
+  --color-olive-base: #6b7216;
+  --color-olive-light: #eef0d5;
+
   --shadow-dropdown: 0 4px 15px rgb(0 0 0 / 0.1);
 
   /* valor dos cards de resumo: Bold 28/32 */

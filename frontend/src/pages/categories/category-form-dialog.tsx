@@ -194,9 +194,9 @@ function CategoryForm({ category, onSavingChange, onDone }: CategoryFormProps) {
 
         <fieldset className="min-w-0">
           <legend className={legendClasses}>Cor</legend>
-          <div className="flex gap-2">
+          <div className="grid grid-cols-7 gap-2">
             {CATEGORY_COLORS.map((name) => (
-              <label key={name} className={cn(optionClasses, 'flex-1 p-1')}>
+              <label key={name} className={cn(optionClasses, 'p-1')}>
                 <input
                   type="radio"
                   value={name}
