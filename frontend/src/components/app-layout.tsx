@@ -5,7 +5,8 @@ export function AppLayout() {
   return (
     <div className="min-h-dvh bg-gray-100">
       <Navbar />
-      <main className="flex flex-col gap-8 p-4 md:p-6 lg:p-12">
+      {/* Limitado ao frame do Figma (1280px): com o padding de 48, o conteúdo fica com 1184px. */}
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 p-4 md:p-6 lg:p-12">
         <Outlet />
       </main>
     </div>
