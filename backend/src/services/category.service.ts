@@ -28,7 +28,29 @@ const ICONS = [
   'receipt-text',
 ] as const
 
-const COLORS = ['green', 'blue', 'purple', 'pink', 'red', 'orange', 'yellow'] as const
+const COLORS = [
+  'green',
+  'blue',
+  'purple',
+  'pink',
+  'red',
+  'orange',
+  'yellow',
+  'teal',
+  'sky',
+  'violet',
+  'fuchsia',
+  'rose',
+  'amber',
+  'lime',
+  'emerald',
+  'cyan',
+  'indigo',
+  'navy',
+  'maroon',
+  'brown',
+  'olive',
+] as const
 
 const categorySchema = z.object({
   title: z
