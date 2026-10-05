@@ -14,15 +14,23 @@ import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n  mutation CreateCategory($data: CategoryInput!) {\n    createCategory(data: $data) {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n": typeof types.CreateCategoryDocument,
+    "\n  mutation DeleteCategory($id: ID!) {\n    deleteCategory(id: $id)\n  }\n": typeof types.DeleteCategoryDocument,
     "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": typeof types.LoginDocument,
     "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": typeof types.RegisterDocument,
+    "\n  mutation UpdateCategory($id: ID!, $data: CategoryInput!) {\n    updateCategory(id: $id, data: $data) {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n": typeof types.UpdateCategoryDocument,
     "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n": typeof types.UpdateProfileDocument,
+    "\n  query Categories {\n    categories {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n": typeof types.CategoriesDocument,
     "\n  query Me {\n    me {\n      id\n      name\n      email\n      createdAt\n    }\n  }\n": typeof types.MeDocument,
 };
 const documents: Documents = {
+    "\n  mutation CreateCategory($data: CategoryInput!) {\n    createCategory(data: $data) {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n": types.CreateCategoryDocument,
+    "\n  mutation DeleteCategory($id: ID!) {\n    deleteCategory(id: $id)\n  }\n": types.DeleteCategoryDocument,
     "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": types.LoginDocument,
     "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": types.RegisterDocument,
+    "\n  mutation UpdateCategory($id: ID!, $data: CategoryInput!) {\n    updateCategory(id: $id, data: $data) {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n": types.UpdateCategoryDocument,
     "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n": types.UpdateProfileDocument,
+    "\n  query Categories {\n    categories {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n": types.CategoriesDocument,
     "\n  query Me {\n    me {\n      id\n      name\n      email\n      createdAt\n    }\n  }\n": types.MeDocument,
 };
 
@@ -43,6 +51,14 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  mutation CreateCategory($data: CategoryInput!) {\n    createCategory(data: $data) {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n"): (typeof documents)["\n  mutation CreateCategory($data: CategoryInput!) {\n    createCategory(data: $data) {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DeleteCategory($id: ID!) {\n    deleteCategory(id: $id)\n  }\n"): (typeof documents)["\n  mutation DeleteCategory($id: ID!) {\n    deleteCategory(id: $id)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -51,7 +67,15 @@ export function graphql(source: "\n  mutation Register($data: RegisterInput!) {\
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  mutation UpdateCategory($id: ID!, $data: CategoryInput!) {\n    updateCategory(id: $id, data: $data) {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateCategory($id: ID!, $data: CategoryInput!) {\n    updateCategory(id: $id, data: $data) {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Categories {\n    categories {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n"): (typeof documents)["\n  query Categories {\n    categories {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

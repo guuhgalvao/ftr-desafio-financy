@@ -111,6 +111,50 @@ export const COLOR_CLASSES: Record<TagColor, ColorClasses> = {
   },
 }
 
+// Nomes acessíveis das opções dos seletores do modal de categoria.
+export const CATEGORY_ICON_LABELS: Record<CategoryIconName, string> = {
+  'briefcase-business': 'Maleta',
+  'car-front': 'Carro',
+  'heart-pulse': 'Saúde',
+  'piggy-bank': 'Cofrinho',
+  'shopping-cart': 'Carrinho de compras',
+  ticket: 'Ingresso',
+  'tool-case': 'Caixa de ferramentas',
+  utensils: 'Talheres',
+  'paw-print': 'Pata',
+  house: 'Casa',
+  gift: 'Presente',
+  dumbbell: 'Haltere',
+  'book-open': 'Livro',
+  'baggage-claim': 'Bagagem',
+  mailbox: 'Caixa de correio',
+  'receipt-text': 'Recibo',
+}
+
+export const CATEGORY_COLOR_LABELS: Record<CategoryColor, string> = {
+  green: 'Verde',
+  blue: 'Azul',
+  purple: 'Roxo',
+  pink: 'Rosa',
+  red: 'Vermelho',
+  orange: 'Laranja',
+  yellow: 'Amarelo',
+}
+
+/**
+ * A categoria com mais transações (item 30 de screens.md). Espera a lista em ordem alfabética,
+ * como a API devolve: no empate fica a primeira. Sem nenhuma transação, `null`.
+ */
+export function getMostUsedCategory<T extends { transactionsCount: number }>(
+  categories: readonly T[],
+): T | null {
+  let mostUsed: T | null = null
+  for (const category of categories) {
+    if (category.transactionsCount > (mostUsed?.transactionsCount ?? 0)) mostUsed = category
+  }
+  return mostUsed
+}
+
 export function isCategoryColor(value: string | null | undefined): value is CategoryColor {
   return CATEGORY_COLORS.includes(value as CategoryColor)
 }
