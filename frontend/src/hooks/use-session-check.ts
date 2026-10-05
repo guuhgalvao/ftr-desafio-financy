@@ -24,8 +24,7 @@ export function useSessionCheck() {
       .then(({ data }) => {
         const state = useAuthStore.getState()
         if (!data || state.token !== token) return
-        const { id, name, email } = data.me
-        state.updateUser({ id, name, email })
+        state.updateUser(data.me)
       })
       // Sem resposta da API a sessão continua; o UNAUTHENTICATED já foi tratado pelo link de erro.
       .catch(() => {})

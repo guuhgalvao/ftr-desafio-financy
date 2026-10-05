@@ -29,14 +29,19 @@ const sessionStorageByRemember: StateStorage = {
   },
 }
 
+// Guarda só os campos da sessão: o retorno do Apollo traz `__typename` e outros campos junto.
+function toSessionUser({ id, name, email }: SessionUser): SessionUser {
+  return { id, name, email }
+}
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       token: null,
       user: null,
       remember: false,
-      signIn: ({ token, user }, remember) => set({ token, user, remember }),
-      updateUser: (user) => set({ user }),
+      signIn: ({ token, user }, remember) => set({ token, user: toSessionUser(user), remember }),
+      updateUser: (user) => set({ user: toSessionUser(user) }),
       signOut: () => set({ token: null, user: null, remember: false }),
     }),
     {

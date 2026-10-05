@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LogOut, Mail, UserRound } from 'lucide-react'
+import { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
 import { Avatar } from '@/components/avatar'
@@ -36,6 +37,12 @@ function ProfileCard({ user }: { user: SessionUser }) {
     defaultValues: { name: user.name },
   })
 
+  // O `me` do layout pode trazer um nome mais novo que o do store: o campo acompanha, sem
+  // apagar o que o usuário já digitou.
+  useEffect(() => {
+    reset({ name: user.name }, { keepDirtyValues: true })
+  }, [reset, user.name])
+
   const name = useWatch({ control, name: 'name' })
   const isUnchanged = name.trim() === user.name
 
@@ -43,9 +50,8 @@ function ProfileCard({ user }: { user: SessionUser }) {
     try {
       const result = await updateProfile({ variables: { data } })
       if (!result.data) return
-      const { id, name, email } = result.data.updateProfile
-      updateUser({ id, name, email })
-      reset({ name })
+      updateUser(result.data.updateProfile)
+      reset({ name: result.data.updateProfile.name })
       toast.success('Perfil atualizado com sucesso')
     } catch (error) {
       // Sessão expirada: o link de erro do Apollo já encerra a sessão e mostra o toast.
