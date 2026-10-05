@@ -103,6 +103,12 @@ export default function StyleguidePage() {
             <Input label="Label" icon={Mail} defaultValue="Text" error="Mensagem de erro" />
           </div>
         </Row>
+        <Row label="Empty / active, error">
+          <div className="grid w-full max-w-xs grid-cols-2 gap-4">
+            <Input label="Label" icon={Mail} placeholder="Placeholder" data-force="active" />
+            <Input label="Label" icon={Mail} placeholder="Placeholder" error="Obrigatório" />
+          </div>
+        </Row>
         <Row label="Disabled">
           <div className="w-full max-w-xs">
             <Input label="Label" icon={Mail} defaultValue="Text" helper="Helper" disabled />

@@ -28,7 +28,8 @@ export const fieldBoxClasses =
 
 export const fieldIconClasses = cn(
   'size-4 shrink-0 text-gray-800',
-  'group-has-[input:placeholder-shown]/field:text-gray-400 group-has-[[data-placeholder]]/field:text-gray-400',
+  // `:where` zera a especificidade do "vazio", para foco e erro vencerem também no campo vazio.
+  'group-has-[:where(input:placeholder-shown)]/field:text-gray-400 group-has-[:where([data-placeholder])]/field:text-gray-400',
   'group-focus-within/field:text-brand-base group-data-[force=active]/field:text-brand-base',
   'group-has-[[data-state=open]]/field:text-brand-base',
   'group-data-[error]/field:text-danger',
