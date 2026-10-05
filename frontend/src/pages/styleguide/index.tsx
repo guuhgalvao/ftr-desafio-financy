@@ -320,7 +320,7 @@ export default function StyleguidePage() {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => toast('Recuperação de senha ainda não disponível')}
+            onClick={() => toast.info('Recuperação de senha ainda não disponível')}
           >
             Informativo
           </Button>

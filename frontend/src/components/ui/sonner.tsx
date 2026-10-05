@@ -1,4 +1,4 @@
-import { Check, X } from 'lucide-react'
+import { Check, Info, X } from 'lucide-react'
 import { Toaster as Sonner, type ToasterProps } from 'sonner'
 
 function Toaster(props: ToasterProps) {
@@ -9,6 +9,7 @@ function Toaster(props: ToasterProps) {
       icons={{
         success: <Check className="size-4 text-success" />,
         error: <X className="size-4 text-danger" />,
+        info: <Info className="size-4 text-info" />,
       }}
       toastOptions={{
         unstyled: true,
