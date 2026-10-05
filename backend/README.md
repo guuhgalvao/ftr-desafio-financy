@@ -13,7 +13,13 @@ API GraphQL do Financy: Express 5, Apollo Server 5, type-graphql, Prisma e SQLit
 pnpm install
 ```
 
-Crie o arquivo `.env` a partir do `.env.example` e preencha o `JWT_SECRET` com qualquer texto longo e aleatório:
+Crie o arquivo `.env` a partir do `.env.example`:
+
+```bash
+cp .env.example .env          # PowerShell: Copy-Item .env.example .env
+```
+
+Preencha o `JWT_SECRET` com qualquer texto longo e aleatório:
 
 ```
 JWT_SECRET=troque-por-um-segredo-longo
@@ -35,6 +41,24 @@ Na primeira vez, o `db:migrate` já executa o seed ao criar o banco. O `db:seed`
 | E-mail | Senha |
 |---|---|
 | `demo@financy.dev` | `financy123` |
+
+## Apollo Sandbox
+
+Com a API no ar, abra http://localhost:4000/graphql no navegador para explorar o schema e testar as operações.
+
+Para as operações protegidas, rode o `login` com o usuário demo e cole o `token` na aba **Headers**:
+
+```graphql
+mutation {
+  login(data: { email: "demo@financy.dev", password: "financy123" }) {
+    token
+  }
+}
+```
+
+```
+Authorization: Bearer <token>
+```
 
 ## Scripts
 
