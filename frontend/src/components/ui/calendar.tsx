@@ -31,7 +31,7 @@ function Calendar({ className, classNames, ...props }: DayPickerProps) {
         today: '[&:not([data-selected])>button]:bg-gray-200',
         selected:
           '[&>button]:bg-brand-base [&>button]:font-medium [&>button]:text-white [&>button]:hover:bg-brand-dark',
-        outside: 'text-gray-400',
+        outside: '[&:not([data-selected])>button]:text-gray-400',
         disabled: 'opacity-50',
         hidden: 'invisible',
         ...classNames,
