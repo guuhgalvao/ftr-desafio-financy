@@ -41,6 +41,15 @@ export function TransactionFormDialog({
 }: TransactionFormDialogProps) {
   const [isSaving, setIsSaving] = useState(false)
 
+  // Conta as aberturas. Reabrir antes de a animação de saída terminar reaproveitaria o formulário
+  // anterior, com os valores de outra transação; a `key` garante um formulário novo.
+  const [opening, setOpening] = useState(0)
+  const [wasOpen, setWasOpen] = useState(open)
+  if (open !== wasOpen) {
+    setWasOpen(open)
+    if (open) setOpening((count) => count + 1)
+  }
+
   return (
     // Durante o envio o modal não fecha (x, Esc, overlay): um erro da API precisa dele aberto.
     <Dialog open={open} onOpenChange={(next) => !isSaving && onOpenChange(next)}>
@@ -56,6 +65,7 @@ export function TransactionFormDialog({
         </DialogHeader>
         {/* Montado só com o modal aberto: cada abertura começa com os valores iniciais. */}
         <TransactionForm
+          key={opening}
           transaction={transaction}
           onSavingChange={setIsSaving}
           onDone={() => onOpenChange(false)}
