@@ -37,10 +37,26 @@ type CategoryFormDialogProps = {
   /** Categoria em edição; `null` cria uma nova. */
   category: CategoryItem | null
   onOpenChange: (open: boolean) => void
+  /** Chamado com a categoria criada, depois de a lista ser atualizada. */
+  onCreated?: (category: CategoryItem) => void
 }
 
-export function CategoryFormDialog({ open, category, onOpenChange }: CategoryFormDialogProps) {
+export function CategoryFormDialog({
+  open,
+  category,
+  onOpenChange,
+  onCreated,
+}: CategoryFormDialogProps) {
   const [isSaving, setIsSaving] = useState(false)
+
+  // Conta as aberturas. Reabrir antes de a animação de saída terminar reaproveitaria o formulário
+  // anterior, com os valores de outra categoria; a `key` garante um formulário novo.
+  const [opening, setOpening] = useState(0)
+  const [wasOpen, setWasOpen] = useState(open)
+  if (open !== wasOpen) {
+    setWasOpen(open)
+    if (open) setOpening((count) => count + 1)
+  }
 
   return (
     // Durante o envio o modal não fecha (x, Esc, overlay): um erro da API precisa dele aberto.
@@ -57,8 +73,10 @@ export function CategoryFormDialog({ open, category, onOpenChange }: CategoryFor
         </DialogHeader>
         {/* Montado só com o modal aberto: cada abertura começa com os valores iniciais. */}
         <CategoryForm
+          key={opening}
           category={category}
           onSavingChange={setIsSaving}
+          onCreated={onCreated}
           onDone={() => onOpenChange(false)}
         />
       </DialogContent>
@@ -78,10 +96,11 @@ const optionClasses = cn(
 type CategoryFormProps = {
   category: CategoryItem | null
   onSavingChange: (isSaving: boolean) => void
+  onCreated?: (category: CategoryItem) => void
   onDone: () => void
 }
 
-function CategoryForm({ category, onSavingChange, onDone }: CategoryFormProps) {
+function CategoryForm({ category, onSavingChange, onCreated, onDone }: CategoryFormProps) {
   const client = useApolloClient()
   const [createCategory] = useMutation(CREATE_CATEGORY_MUTATION)
   const [updateCategory] = useMutation(UPDATE_CATEGORY_MUTATION)
@@ -115,12 +134,14 @@ function CategoryForm({ category, onSavingChange, onDone }: CategoryFormProps) {
     onSavingChange(true)
 
     try {
+      let created: CategoryItem | undefined
       if (category) await updateCategory({ variables: { id: category.id, data: input } })
-      else await createCategory({ variables: { data: input } })
+      else created = (await createCategory({ variables: { data: input } })).data?.createCategory
 
       // O modal só fecha com a lista e os resumos já atualizados.
       await refetchCategories(client)
       toast.success(category ? 'Categoria atualizada com sucesso' : 'Categoria criada com sucesso')
+      if (created) onCreated?.(created)
       onDone()
     } catch (error) {
       const code = getGraphQLErrorCode(error)
