@@ -60,7 +60,7 @@ Crie o banco, popule o usuário demo e suba a API:
 
 ```bash
 pnpm db:migrate   # cria prisma/dev.db e aplica as migrations
-pnpm db:seed      # recria o usuário demo com categorias e transações
+pnpm db:seed      # cria o usuário demo e recria as categorias e transações dele
 pnpm dev          # http://localhost:4000/graphql
 ```
 

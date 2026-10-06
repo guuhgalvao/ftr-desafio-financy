@@ -30,11 +30,11 @@ Preencha também as chaves `CLOUDFLARE_*` (ver [Avatar (Cloudflare R2)](#avatar-
 
 ```bash
 pnpm db:migrate   # cria prisma/dev.db, aplica as migrations e gera o Prisma Client
-pnpm db:seed      # recria o usuário demo com categorias e transações
+pnpm db:seed      # cria o usuário demo e recria as categorias e transações dele
 pnpm dev          # http://localhost:4000/graphql
 ```
 
-Na primeira vez, o `db:migrate` já executa o seed ao criar o banco. O `db:seed` pode ser repetido à vontade: ele apaga e recria só os dados do usuário demo.
+Na primeira vez, o `db:migrate` já executa o seed ao criar o banco. O `db:seed` pode ser repetido à vontade: ele mantém o usuário demo (mesmo `id`, mesma foto) e só redefine o nome e a senha e recria as categorias e transações dele. Quem estiver logado com o demo continua logado depois do seed.
 
 ## Usuário demo
 
@@ -70,7 +70,7 @@ Authorization: Bearer <token>
 | `pnpm lint` / `pnpm format` | Biome (checar / corrigir) |
 | `pnpm db:generate` | Gera o Prisma Client |
 | `pnpm db:migrate` | Aplica as migrations em desenvolvimento |
-| `pnpm db:seed` | Popula o banco com o usuário demo |
+| `pnpm db:seed` | Cria o usuário demo, se faltar, e recria as categorias e transações dele |
 | `pnpm db:reset` | Apaga o banco e reaplica as migrations e o seed |
 
 Não há etapa de build: a API roda com `tsx` tanto no `dev` quanto no `start`.

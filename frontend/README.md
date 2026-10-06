@@ -49,7 +49,7 @@ Os tipos de `src/gql/` são gerados a partir de `../backend/schema.graphql` e fi
 
 ## Foto de perfil
 
-Em `/perfil` dá para enviar, trocar e remover a foto (PNG, JPG ou WEBP, até 2 MB). O arquivo vai do navegador direto para o Cloudflare R2, por uma URL assinada pela API; o front não tem nenhuma credencial. O bucket precisa liberar a origem do front no CORS: ver "Avatar (Cloudflare R2)" em `../backend/README.md`.
+Em `/perfil`, o avatar tem um selo de edição e abre o modal "Foto de perfil": ali dá para escolher uma imagem (PNG, JPG ou WEBP, até 2 MB), ver a prévia e salvar, ou remover a foto atual, com confirmação. Sem foto, o avatar mostra as iniciais do nome. O arquivo vai do navegador direto para o Cloudflare R2, por uma URL assinada pela API; o front não tem nenhuma credencial. O bucket precisa liberar a origem do front no CORS: ver "Avatar (Cloudflare R2)" em `../backend/README.md`.
 
 ## Style guide
 
