@@ -105,18 +105,27 @@ async function cleanUp(userId: string, keepKey: string | null, previousUrl: stri
     objects = await storage.listObjects(prefix)
   } catch (error) {
     console.error(`Não foi possível listar os objetos de ${prefix} no bucket:`, error)
-    if (previousKey) await deleteQuietly(previousKey)
+    if (previousKey && previousKey !== (await currentKey(userId))) await deleteQuietly(previousKey)
     return
   }
 
+  // Read again after listing: a call from another tab may have just saved one of these objects.
+  const inUseKey = await currentKey(userId)
+
   const now = Date.now()
   const orphans = objects
-    .filter(({ key }) => key !== keepKey)
+    .filter(({ key }) => key !== keepKey && key !== inUseKey)
     .filter(
       ({ key, lastModified }) =>
         key === previousKey || now - lastModified.getTime() > ORPHAN_AGE_MS,
     )
   await Promise.all(orphans.map(({ key }) => deleteQuietly(key)))
+}
+
+/** Key of the photo the database points to right now, if any. */
+async function currentKey(userId: string) {
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { avatarUrl: true } })
+  return user?.avatarUrl ? storage.keyFromPublicUrl(user.avatarUrl) : null
 }
 
 // The database is already right at this point: a failed delete only leaves an orphan object, which
