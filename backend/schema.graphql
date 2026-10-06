@@ -124,6 +124,7 @@ input UpdateProfileInput {
 }
 
 type User {
+  avatarUrl: String
   createdAt: DateTimeISO!
   email: String!
   id: ID!
