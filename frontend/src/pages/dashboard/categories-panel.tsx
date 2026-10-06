@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Plus } from 'lucide-react'
 import { Link } from '@/components/link'
 import { Tag } from '@/components/tag'
 import type { CategoryItem } from '@/graphql/queries/categories'
@@ -20,9 +20,10 @@ export function getTopCategories(categories: readonly CategoryItem[]): CategoryI
 type CategoriesPanelProps = {
   /** `undefined` enquanto carrega. */
   categories: CategoryItem[] | undefined
+  onCreate: () => void
 }
 
-export function CategoriesPanel({ categories }: CategoriesPanelProps) {
+export function CategoriesPanel({ categories, onCreate }: CategoriesPanelProps) {
   return (
     <section className={sectionClasses}>
       <header className={sectionHeaderClasses}>
@@ -44,25 +45,32 @@ export function CategoriesPanel({ categories }: CategoriesPanelProps) {
       ) : categories.length === 0 ? (
         <div className="flex flex-col items-center gap-4 p-6 text-center">
           <p className="text-gray-500 text-sm">Nenhuma categoria cadastrada</p>
-          <Link to="/categorias">Criar categoria</Link>
+          <Link onClick={onCreate}>Criar categoria</Link>
         </div>
       ) : (
-        <ul className="flex flex-col gap-5 p-6">
-          {getTopCategories(categories).map((category) => (
-            <li key={category.id} className="flex items-center gap-4">
-              <div className="flex min-w-0 flex-1">
-                <Tag color={category.color}>{category.title}</Tag>
-              </div>
-              <span className="shrink-0 text-gray-600 text-sm">
-                {formatItemsCount(category.transactionsCount)}
-              </span>
-              {/* Soma absoluta de todas as transações da categoria, sem sinal e sem período. */}
-              <span className="min-w-22 shrink-0 text-right font-semibold text-gray-800 text-sm">
-                {formatCurrency(category.totalAmount)}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="flex flex-col gap-5 p-6">
+            {getTopCategories(categories).map((category) => (
+              <li key={category.id} className="flex items-center gap-4">
+                <div className="flex min-w-0 flex-1">
+                  <Tag color={category.color}>{category.title}</Tag>
+                </div>
+                <span className="shrink-0 text-gray-600 text-sm">
+                  {formatItemsCount(category.transactionsCount)}
+                </span>
+                {/* Soma absoluta de todas as transações da categoria, sem sinal e sem período. */}
+                <span className="min-w-22 shrink-0 text-right font-semibold text-gray-800 text-sm">
+                  {formatCurrency(category.totalAmount)}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <footer className="flex justify-center border-gray-200 border-t px-6 py-5">
+            <Link icon={Plus} onClick={onCreate}>
+              Nova categoria
+            </Link>
+          </footer>
+        </>
       )}
     </section>
   )

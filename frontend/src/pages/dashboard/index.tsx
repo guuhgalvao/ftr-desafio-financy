@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client/react'
 import { useMemo, useState } from 'react'
+import { CategoryFormDialog } from '@/components/category-form-dialog'
 import { Link } from '@/components/link'
 import { TransactionFormDialog } from '@/components/transaction-form-dialog'
 import { CATEGORIES_QUERY } from '@/graphql/queries/categories'
@@ -15,6 +16,7 @@ const RECENT_VARIABLES = { pagination: { page: 1, perPage: 5 } }
 
 export function DashboardPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false)
 
   // Receitas e despesas do mês atual, pela data local.
   const period = useMemo(() => currentMonthPeriod(), [])
@@ -60,11 +62,19 @@ export function DashboardPage() {
           />
         </div>
         <div className="min-w-0">
-          <CategoriesPanel categories={categories.data?.categories} />
+          <CategoriesPanel
+            categories={categories.data?.categories}
+            onCreate={() => setIsCategoryFormOpen(true)}
+          />
         </div>
       </div>
 
       <TransactionFormDialog open={isFormOpen} transaction={null} onOpenChange={setIsFormOpen} />
+      <CategoryFormDialog
+        open={isCategoryFormOpen}
+        category={null}
+        onOpenChange={setIsCategoryFormOpen}
+      />
     </>
   )
 }
