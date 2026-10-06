@@ -94,7 +94,8 @@ export function TransactionsTable({
               </Tag>
             </td>
             <td className="px-2 text-center">
-              <TypeBadge type={transaction.type} />
+              {/* `flex`: como inline, o badge fica na linha de base e sobe 2px no centro da linha. */}
+              <TypeBadge type={transaction.type} className="flex justify-center" />
             </td>
             <td className="whitespace-nowrap px-6 text-right font-semibold text-gray-800 text-sm">
               {formatSignedAmount(transaction.amount, transaction.type)}
