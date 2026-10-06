@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { DayPicker, type DayPickerProps } from 'react-day-picker'
@@ -35,6 +36,17 @@ function Calendar({ className, classNames, ...props }: DayPickerProps) {
         disabled: 'opacity-50',
         hidden: 'invisible',
         ...classNames,
+      }}
+      // Rótulos acessíveis em pt-BR: os padrões do react-day-picker são em inglês.
+      labels={{
+        labelPrevious: () => 'Mês anterior',
+        labelNext: () => 'Próximo mês',
+        labelDayButton: (date, modifiers) => {
+          let label = format(date, 'PPPP', { locale: ptBR })
+          if (modifiers.today) label = `Hoje, ${label}`
+          if (modifiers.selected) label = `${label}, selecionado`
+          return label
+        },
       }}
       components={{
         Chevron: ({ orientation }) =>
