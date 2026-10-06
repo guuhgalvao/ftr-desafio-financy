@@ -13,7 +13,11 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { DELETE_TRANSACTION_MUTATION } from '@/graphql/mutations/delete-transaction'
-import { refetchAfterTransactionWrite, type TransactionItem } from '@/graphql/queries/transactions'
+import {
+  refetchAfterTransactionWrite,
+  TRANSACTION_GONE_MESSAGE,
+  type TransactionItem,
+} from '@/graphql/queries/transactions'
 import { getErrorMessage, getGraphQLErrorCode } from '@/lib/errors'
 
 type DeleteTransactionDialogProps = {
@@ -50,13 +54,15 @@ export function DeleteTransactionDialog({
       // Sessão expirada: o link de erro do Apollo já encerra a sessão e mostra o toast.
       if (code === 'UNAUTHENTICATED') return
 
-      toast.error(getErrorMessage(error))
-
       // Já tinha sido excluída em outro lugar: a lista está desatualizada.
       if (code === 'NOT_FOUND') {
+        toast.error(TRANSACTION_GONE_MESSAGE)
         void refetchAfterTransactionWrite(client)
         onOpenChange(false)
+        return
       }
+
+      toast.error(getErrorMessage(error))
     } finally {
       setIsDeleting(false)
     }

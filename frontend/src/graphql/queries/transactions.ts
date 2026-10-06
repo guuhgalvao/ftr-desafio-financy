@@ -7,6 +7,9 @@ export type TransactionItem = TransactionsQuery['transactions']['items'][number]
 
 export const TRANSACTIONS_PER_PAGE = 10
 
+/** Toast de erro ao editar ou excluir uma transação que já foi excluída em outro lugar. */
+export const TRANSACTION_GONE_MESSAGE = 'Esta transação não existe mais'
+
 export const TRANSACTIONS_QUERY = graphql(`
   query Transactions($filter: TransactionFilterInput, $pagination: PaginationInput) {
     transactions(filter: $filter, pagination: $pagination) {

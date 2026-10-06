@@ -21,11 +21,19 @@ import {
 import { CREATE_TRANSACTION_MUTATION } from '@/graphql/mutations/create-transaction'
 import { UPDATE_TRANSACTION_MUTATION } from '@/graphql/mutations/update-transaction'
 import { CATEGORIES_QUERY } from '@/graphql/queries/categories'
-import { refetchAfterTransactionWrite, type TransactionItem } from '@/graphql/queries/transactions'
+import {
+  refetchAfterTransactionWrite,
+  TRANSACTION_GONE_MESSAGE,
+  type TransactionItem,
+} from '@/graphql/queries/transactions'
 import { getErrorMessage, getGraphQLErrorCode, getGraphQLErrorField } from '@/lib/errors'
 import { formatCentsInput, parseCentsInput } from '@/lib/format'
 import { cn } from '@/lib/utils'
-import { type TransactionFormData, transactionSchema } from '@/schemas/transaction'
+import {
+  MAX_AMOUNT_CENTS,
+  type TransactionFormData,
+  transactionSchema,
+} from '@/schemas/transaction'
 
 type TransactionFormDialogProps = {
   open: boolean
@@ -159,20 +167,23 @@ function TransactionForm({ transaction, onSavingChange, onDone }: TransactionFor
       if (code === 'UNAUTHENTICATED') return
 
       const message = getErrorMessage(error)
-      toast.error(message)
 
       if (code === 'NOT_FOUND') {
         await refetchAfterTransactionWrite(client)
         const current = client.readQuery({ query: CATEGORIES_QUERY })?.categories
         // A categoria escolhida foi excluída em outro lugar: dá para escolher outra.
         if (current && !current.some((category) => category.id === data.categoryId)) {
+          toast.error(message)
           setError('categoryId', { message })
           return
         }
         // A transação foi excluída em outro lugar: não há mais o que editar.
+        toast.error(TRANSACTION_GONE_MESSAGE)
         onDone()
         return
       }
+
+      toast.error(message)
 
       const field = getGraphQLErrorField(error)
       if (field && field in data) {
@@ -247,7 +258,11 @@ function TransactionForm({ transaction, onSavingChange, onDone }: TransactionFor
                 onBlur={field.onBlur}
                 // O formulário guarda centavos inteiros; o texto é só a máscara.
                 value={formatCentsInput(field.value)}
-                onChange={(event) => field.onChange(parseCentsInput(event.target.value))}
+                onChange={(event) => {
+                  const cents = parseCentsInput(event.target.value)
+                  // Acima de R$ 10.000.000,00 a digitação é ignorada.
+                  if (cents <= MAX_AMOUNT_CENTS) field.onChange(cents)
+                }}
               />
             )}
           />
