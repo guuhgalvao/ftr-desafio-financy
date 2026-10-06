@@ -89,6 +89,7 @@ type Selection = { file: File; previewUrl: string }
 function AvatarForm({ user, onBusyChange, onDone }: AvatarFormProps) {
   const updateUser = useAuthStore((state) => state.updateUser)
   const inputRef = useRef<HTMLInputElement>(null)
+  const chooseButtonRef = useRef<HTMLButtonElement>(null)
 
   const [selection, setSelection] = useState<Selection | null>(null)
   const [fileError, setFileError] = useState<string | null>(null)
@@ -106,6 +107,11 @@ function AvatarForm({ user, onBusyChange, onDone }: AvatarFormProps) {
     if (!previewUrl) return
     return () => URL.revokeObjectURL(previewUrl)
   }, [previewUrl])
+
+  // Sem isto, o foco inicial do Dialog cairia no botão de fechar.
+  useEffect(() => {
+    chooseButtonRef.current?.focus()
+  }, [])
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
@@ -201,6 +207,7 @@ function AvatarForm({ user, onBusyChange, onDone }: AvatarFormProps) {
 
         <div className="flex flex-col items-center gap-2">
           <Button
+            ref={chooseButtonRef}
             size="sm"
             variant="outline"
             disabled={isUploading}
