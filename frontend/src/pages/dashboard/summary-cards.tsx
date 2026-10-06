@@ -22,7 +22,8 @@ function SummaryCard({ icon: Icon, iconClassName, label, value }: SummaryCardPro
           {label}
         </span>
       </div>
-      <strong className="truncate font-bold text-gray-800 text-value">
+      {/* Com três colunas abaixo de 1024px o valor em 28px não cabe no card. */}
+      <strong className="truncate font-bold text-gray-800 text-value md:max-lg:text-[1.5rem]">
         {formatCurrency(value)}
       </strong>
     </div>
