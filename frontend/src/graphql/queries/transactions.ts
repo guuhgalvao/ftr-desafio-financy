@@ -2,8 +2,6 @@ import type { ApolloClient } from '@apollo/client'
 import { toast } from 'sonner'
 import { graphql } from '@/gql'
 import type { TransactionsQuery } from '@/gql/graphql'
-import { CATEGORIES_QUERY } from './categories'
-import { SUMMARY_QUERY } from './summary'
 
 export type TransactionItem = TransactionsQuery['transactions']['items'][number]
 
@@ -43,12 +41,15 @@ export async function refetchAfterTransactionWrite(
   includeTransactions = true,
 ) {
   try {
+    // Só as queries montadas na tela: pedir uma inativa pelo documento gera aviso do Apollo.
+    const affected = new Set<string | undefined>([
+      ...(includeTransactions ? ['Transactions'] : []),
+      'Summary',
+      'Categories',
+    ])
     await client.refetchQueries({
-      include: [
-        ...(includeTransactions ? [TRANSACTIONS_QUERY] : []),
-        SUMMARY_QUERY,
-        CATEGORIES_QUERY,
-      ],
+      include: 'active',
+      onQueryUpdated: (query) => affected.has(query.queryName),
     })
   } catch {
     toast.error('Não foi possível atualizar os dados. Recarregue a página.')
