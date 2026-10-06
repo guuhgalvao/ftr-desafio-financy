@@ -26,6 +26,25 @@ export function formatCurrency(cents: number): string {
   return currencyFormatter.format(cents / 100)
 }
 
+/** Valor com o sinal do tipo, como nas listas: `+ R$ 10,00` ou `- R$ 10,00`. */
+export function formatSignedAmount(cents: number, type: 'INCOME' | 'EXPENSE'): string {
+  return `${type === 'INCOME' ? '+' : '-'} ${formatCurrency(cents)}`
+}
+
+/** Centavos digitados no campo Valor: só os dígitos contam, no máximo `maxDigits`. */
+export function parseCentsInput(text: string, maxDigits = 10): number {
+  const digits = text.replace(/\D/g, '').slice(0, maxDigits)
+  return digits ? Number(digits) : 0
+}
+
+/** Centavos como texto do campo Valor, sem o "R$": `123` vira `1,23`. Zero deixa o campo vazio. */
+export function formatCentsInput(cents: number): string {
+  if (!Number.isInteger(cents) || cents <= 0) return ''
+  const digits = String(cents).padStart(3, '0')
+  const reais = digits.slice(0, -2).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  return `${reais},${digits.slice(-2)}`
+}
+
 export function formatDate(isoDate: string, style: 'short' | 'long' = 'long'): string {
   const [year, month, day] = isoDate.split('-')
   return `${day}/${month}/${style === 'short' ? year.slice(2) : year}`
