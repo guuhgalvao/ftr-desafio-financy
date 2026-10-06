@@ -47,6 +47,10 @@ A aplicação abre em `http://localhost:5173`.
 
 Os tipos de `src/gql/` são gerados a partir de `../backend/schema.graphql` e ficam versionados, então o build não depende da API no ar. Rode `pnpm codegen` sempre que o schema ou algum documento `graphql(...)` mudar.
 
+## Foto de perfil
+
+Em `/perfil` dá para enviar, trocar e remover a foto (PNG, JPG ou WEBP, até 2 MB). O arquivo vai do navegador direto para o Cloudflare R2, por uma URL assinada pela API; o front não tem nenhuma credencial. O bucket precisa liberar a origem do front no CORS: ver "Avatar (Cloudflare R2)" em `../backend/README.md`.
+
 ## Style guide
 
 Em desenvolvimento, `http://localhost:5173/_styleguide` mostra todos os componentes do design e seus estados. A rota não entra no build de produção.

@@ -26,7 +26,7 @@ JWT_SECRET=troque-por-um-segredo-longo
 DATABASE_URL="file:./dev.db"
 ```
 
-Sem `JWT_SECRET` a API não sobe e avisa qual variável está faltando.
+Preencha também as chaves `CLOUDFLARE_*` (ver [Avatar (Cloudflare R2)](#avatar-cloudflare-r2)). Sem alguma das variáveis a API não sobe e avisa qual está faltando.
 
 ```bash
 pnpm db:migrate   # cria prisma/dev.db, aplica as migrations e gera o Prisma Client
@@ -84,3 +84,40 @@ Authorization: Bearer <token>
 ```
 
 O schema emitido fica em `schema.graphql` e é atualizado sempre que a API sobe.
+
+## Avatar (Cloudflare R2)
+
+A foto de perfil fica num bucket do Cloudflare R2. O arquivo vai do navegador direto para o bucket, por uma URL de `PUT` assinada pela API (válida por 5 minutos, com tipo e tamanho assinados). A API nunca recebe o arquivo e as credenciais nunca chegam ao front.
+
+1. `createAvatarUploadUrl(contentType, contentLength)` devolve `uploadUrl` e `key`. Aceita `image/png`, `image/jpeg` e `image/webp`, até 2 MB.
+2. O front faz o `PUT` do arquivo em `uploadUrl`.
+3. `updateAvatar(key)` confere que a chave é do usuário e que o objeto existe, grava `User.avatarUrl` e apaga a foto anterior do bucket.
+4. `removeAvatar` apaga o objeto e zera `avatarUrl`.
+
+### Configuração do R2
+
+1. Crie um bucket (ex.: `financy-uploads`) e ative o acesso público pelo subdomínio `r2.dev` (Settings → Public Development URL).
+2. Crie um token de API do R2 com permissão **Object Read & Write** restrita a esse bucket.
+3. Em Settings → CORS Policy do bucket, libere o envio a partir do front:
+
+```json
+[
+  {
+    "AllowedOrigins": ["http://localhost:5173"],
+    "AllowedMethods": ["PUT", "GET"],
+    "AllowedHeaders": ["Content-Type"]
+  }
+]
+```
+
+4. Preencha o `.env`:
+
+| Variável | Valor |
+|---|---|
+| `CLOUDFLARE_ACCOUNT_ID` | ID da conta (aparece no endpoint S3 do bucket) |
+| `CLOUDFLARE_ACCESS_KEY_ID` | Access Key ID do token |
+| `CLOUDFLARE_SECRET_ACCESS_KEY` | Secret Access Key do token |
+| `CLOUDFLARE_BUCKET` | Nome do bucket |
+| `CLOUDFLARE_PUBLIC_URL` | URL pública do bucket, com `https://` (ex.: `https://pub-xxxx.r2.dev`) |
+
+Os objetos são gravados em `avatars/{userId}/{uuid}.{ext}`.

@@ -8,7 +8,7 @@ O repositório tem dois projetos independentes, uma API GraphQL e uma SPA em Rea
 
 | Pacote | Tecnologias |
 |---|---|
-| [`backend/`](backend/README.md) | TypeScript, Express 5, Apollo Server 5, type-graphql, Prisma 6, SQLite, JWT, Zod |
+| [`backend/`](backend/README.md) | TypeScript, Express 5, Apollo Server 5, type-graphql, Prisma 6, SQLite, JWT, Zod, Cloudflare R2 (AWS SDK v3) |
 | [`frontend/`](frontend/README.md) | TypeScript, React 19, Vite, Apollo Client 4, GraphQL Code Generator, React Router 7, Tailwind CSS 4, shadcn/ui, React Hook Form, Zod |
 
 ## Estrutura
@@ -53,6 +53,8 @@ Abra o `backend/.env` e preencha o `JWT_SECRET` com qualquer texto longo e aleat
 JWT_SECRET=troque-por-um-segredo-longo
 DATABASE_URL="file:./dev.db"
 ```
+
+Esta branch (`feat/avatar-upload`) guarda a foto de perfil no Cloudflare R2: preencha também as chaves `CLOUDFLARE_*`, seguindo a seção [Avatar (Cloudflare R2)](backend/README.md#avatar-cloudflare-r2) do README do back-end. Sem elas a API não sobe.
 
 Crie o banco, popule o usuário demo e suba a API:
 
