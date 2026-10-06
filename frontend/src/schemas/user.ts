@@ -30,6 +30,17 @@ export const loginSchema = z.object({
 
 export const profileSchema = z.object({ name: nameSchema })
 
+// Mesmas regras e mensagens de `createAvatarUploadUrl` (seção Avatar do contrato).
+export const AVATAR_TYPES = ['image/png', 'image/jpeg', 'image/webp']
+export const AVATAR_MAX_SIZE = 2 * 1024 * 1024
+
+/** Mensagem de erro do arquivo escolhido para a foto, ou `null` se ele pode ser enviado. */
+export function validateAvatarFile(file: File): string | null {
+  if (!AVATAR_TYPES.includes(file.type)) return 'Envie uma imagem PNG, JPG ou WEBP'
+  if (file.size < 1 || file.size > AVATAR_MAX_SIZE) return 'A imagem deve ter no máximo 2 MB'
+  return null
+}
+
 export type RegisterFormData = z.infer<typeof registerSchema>
 export type LoginFormData = z.infer<typeof loginSchema>
 export type ProfileFormData = z.infer<typeof profileSchema>

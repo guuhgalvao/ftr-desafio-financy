@@ -4,7 +4,6 @@ import { LogOut, Mail, UserRound } from 'lucide-react'
 import { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
-import { Avatar } from '@/components/avatar'
 import { Button } from '@/components/button'
 import { Input } from '@/components/input'
 import { UPDATE_PROFILE_MUTATION } from '@/graphql/mutations/update-profile'
@@ -12,6 +11,7 @@ import { endSession } from '@/lib/apollo'
 import { getErrorMessage, getGraphQLErrorCode, getGraphQLErrorField } from '@/lib/errors'
 import { type ProfileFormData, profileSchema } from '@/schemas/user'
 import { type SessionUser, useAuthStore } from '@/stores/auth'
+import { AvatarUploader } from './avatar-uploader'
 
 export function ProfilePage() {
   const user = useAuthStore((state) => state.user)
@@ -66,7 +66,7 @@ function ProfileCard({ user }: { user: SessionUser }) {
   return (
     <div className="mx-auto flex w-full max-w-md flex-col gap-8 rounded-xl border border-gray-200 bg-white p-8">
       <header className="flex flex-col items-center gap-6 text-center">
-        <Avatar name={user.name} src={user.avatarUrl} size="lg" />
+        <AvatarUploader user={user} />
         <div className="flex w-full flex-col gap-0.5">
           <h1 className="break-words font-semibold text-gray-800 text-xl">{user.name}</h1>
           <p className="break-words text-base text-gray-600">{user.email}</p>
