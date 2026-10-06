@@ -37,9 +37,19 @@ export const TRANSACTIONS_QUERY = graphql(`
  * as categorias (contagens e totais). Fica fora do `refetchQueries` da mutation de propósito:
  * com `awaitRefetchQueries`, uma falha aqui rejeitaria a mutation que já foi gravada.
  */
-export async function refetchAfterTransactionWrite(client: ApolloClient) {
+export async function refetchAfterTransactionWrite(
+  client: ApolloClient,
+  /** `false` quando a lista já vai buscar outra página por conta própria. */
+  includeTransactions = true,
+) {
   try {
-    await client.refetchQueries({ include: [TRANSACTIONS_QUERY, SUMMARY_QUERY, CATEGORIES_QUERY] })
+    await client.refetchQueries({
+      include: [
+        ...(includeTransactions ? [TRANSACTIONS_QUERY] : []),
+        SUMMARY_QUERY,
+        CATEGORIES_QUERY,
+      ],
+    })
   } catch {
     toast.error('Não foi possível atualizar os dados. Recarregue a página.')
   }
