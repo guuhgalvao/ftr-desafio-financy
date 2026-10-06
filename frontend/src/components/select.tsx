@@ -25,6 +25,9 @@ type SelectProps = {
   disabled?: boolean
   /** Conteúdo do dropdown quando não há opções. */
   emptyContent?: ReactNode
+  /** Controle opcional do dropdown, para fechá-lo a partir de uma ação do `emptyContent`. */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
   id?: string
   name?: string
   className?: string
@@ -41,6 +44,8 @@ export function Select({
   error,
   disabled,
   emptyContent,
+  open,
+  onOpenChange,
   id,
   name,
   className,
@@ -52,7 +57,14 @@ export function Select({
 
   return (
     <Field label={label} htmlFor={triggerId} messageId={messageId} helper={helper} error={error}>
-      <SelectRoot value={value ?? ''} onValueChange={onValueChange} disabled={disabled} name={name}>
+      <SelectRoot
+        value={value ?? ''}
+        onValueChange={onValueChange}
+        open={open}
+        onOpenChange={onOpenChange}
+        disabled={disabled}
+        name={name}
+      >
         <SelectTrigger
           id={triggerId}
           aria-invalid={error ? true : undefined}

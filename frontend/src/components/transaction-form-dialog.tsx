@@ -124,6 +124,7 @@ function TransactionForm({ transaction, onSavingChange, onDone }: TransactionFor
 
   const categories = categoriesData?.categories
   const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false)
+  const [isCategorySelectOpen, setIsCategorySelectOpen] = useState(false)
 
   const {
     control,
@@ -293,10 +294,19 @@ function TransactionForm({ transaction, onSavingChange, onDone }: TransactionFor
                   onValueChange={field.onChange}
                   disabled={!categories}
                   error={errors.categoryId?.message}
+                  open={isCategorySelectOpen}
+                  onOpenChange={setIsCategorySelectOpen}
                   emptyContent={
                     <div className="flex flex-col items-start gap-2">
                       <p className="text-gray-500 text-sm">Nenhuma categoria cadastrada</p>
-                      <Link to="/categorias">Criar categoria</Link>
+                      <Link
+                        onClick={() => {
+                          setIsCategorySelectOpen(false)
+                          setIsCategoryFormOpen(true)
+                        }}
+                      >
+                        Criar categoria
+                      </Link>
                     </div>
                   }
                 />
