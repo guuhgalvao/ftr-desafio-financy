@@ -94,6 +94,8 @@ A foto de perfil fica num bucket do Cloudflare R2. O arquivo vai do navegador di
 3. `updateAvatar(key)` confere que a chave é do usuário e que o objeto existe, grava `User.avatarUrl` e apaga a foto anterior do bucket.
 4. `removeAvatar` apaga o objeto e zera `avatarUrl`.
 
+`updateAvatar` e `removeAvatar` também limpam o prefixo do usuário: além da foto anterior, apagam envios que nunca foram confirmados (com mais de 6 minutos) e objetos cuja exclusão falhou antes. O `pnpm db:seed` mantém o `id` e a foto do usuário demo; já o `pnpm db:reset` apaga o banco e deixa as fotos no bucket.
+
 ### Configuração do R2
 
 1. Crie um bucket (ex.: `financy-uploads`) e ative o acesso público pelo subdomínio `r2.dev` (Settings → Public Development URL).

@@ -1,6 +1,7 @@
 import {
   DeleteObjectCommand,
   HeadObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3'
@@ -55,6 +56,26 @@ export async function getObjectInfo(key: string) {
 
 export async function deleteObject(key: string) {
   await client.send(new DeleteObjectCommand({ Bucket, Key: key }))
+}
+
+/** Every object under a prefix, with the time it was last written. */
+export async function listObjects(prefix: string) {
+  const objects: { key: string; lastModified: Date }[] = []
+  let continuationToken: string | undefined
+
+  do {
+    const page = await client.send(
+      new ListObjectsV2Command({ Bucket, Prefix: prefix, ContinuationToken: continuationToken }),
+    )
+    for (const object of page.Contents ?? []) {
+      if (object.Key && object.LastModified) {
+        objects.push({ key: object.Key, lastModified: object.LastModified })
+      }
+    }
+    continuationToken = page.IsTruncated ? page.NextContinuationToken : undefined
+  } while (continuationToken)
+
+  return objects
 }
 
 export function publicUrl(key: string) {

@@ -184,15 +184,16 @@ function seedDate(today: Date, monthsAgo: number, day: number): string {
 }
 
 async function main() {
-  await prisma.user.deleteMany({ where: { email: DEMO_USER.email } })
-
-  const user = await prisma.user.create({
-    data: {
-      name: DEMO_USER.name,
-      email: DEMO_USER.email,
-      passwordHash: await bcrypt.hash(DEMO_USER.password, 10),
-    },
+  // The demo user keeps its id and its photo: recreating it would leave the avatar orphaned in
+  // the bucket, under the old id. Only name, password, categories and transactions are reset.
+  const passwordHash = await bcrypt.hash(DEMO_USER.password, 10)
+  const user = await prisma.user.upsert({
+    where: { email: DEMO_USER.email },
+    update: { name: DEMO_USER.name, passwordHash },
+    create: { name: DEMO_USER.name, email: DEMO_USER.email, passwordHash },
   })
+  await prisma.transaction.deleteMany({ where: { userId: user.id } })
+  await prisma.category.deleteMany({ where: { userId: user.id } })
 
   const categoryIds = new Map<CategoryTitle, string>()
   for (const category of CATEGORIES) {

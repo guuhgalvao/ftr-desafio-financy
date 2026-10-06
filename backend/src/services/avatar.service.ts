@@ -8,6 +8,10 @@ import { getUser } from './user.service'
 const MAX_SIZE = 2 * 1024 * 1024
 const UPLOAD_URL_EXPIRES_IN = 300
 
+// A signed URL is good for `UPLOAD_URL_EXPIRES_IN`; one more minute covers the trip from the
+// upload to `updateAvatar`. Past that, an object that is not the current photo is an orphan.
+const ORPHAN_AGE_MS = (UPLOAD_URL_EXPIRES_IN + 60) * 1000
+
 const EXTENSIONS: Record<string, string> = {
   'image/png': 'png',
   'image/jpeg': 'jpg',
@@ -66,25 +70,55 @@ export async function updateAvatar(userId: string, key: string) {
   if (current.avatarUrl === avatarUrl) return current
 
   const user = await prisma.user.update({ where: { id: userId }, data: { avatarUrl } })
-  await deletePrevious(current.avatarUrl)
+  await cleanUp(userId, key, current.avatarUrl)
   return user
 }
 
 export async function removeAvatar(userId: string) {
   const current = await getUser(userId)
-  if (!current.avatarUrl) return current
+  const user = current.avatarUrl
+    ? await prisma.user.update({ where: { id: userId }, data: { avatarUrl: null } })
+    : current
 
-  const user = await prisma.user.update({ where: { id: userId }, data: { avatarUrl: null } })
-  await deletePrevious(current.avatarUrl)
+  // Runs even without a photo: uploads that were never confirmed are cleaned here too.
+  await cleanUp(userId, null, current.avatarUrl)
   return user
 }
 
-async function deletePrevious(avatarUrl: string | null) {
-  const key = avatarUrl ? storage.keyFromPublicUrl(avatarUrl) : null
-  if (key) await deleteQuietly(key)
+/**
+ * Leaves in the user's prefix only the object in use. Besides the photo that was just replaced,
+ * this removes what earlier failures left behind: uploads never confirmed with `updateAvatar`,
+ * deletes that failed, and photos saved under another public URL.
+ *
+ * An object newer than `ORPHAN_AGE_MS` may be an upload still on its way to `updateAvatar` (from
+ * another tab, for instance), so it is kept until a later call.
+ */
+async function cleanUp(userId: string, keepKey: string | null, previousUrl: string | null) {
+  const prefix = keyPrefix(userId)
+  const fromUrl = previousUrl ? storage.keyFromPublicUrl(previousUrl) : null
+  const previousKey = fromUrl?.startsWith(prefix) && fromUrl !== keepKey ? fromUrl : null
+
+  let objects: Awaited<ReturnType<typeof storage.listObjects>>
+  try {
+    objects = await storage.listObjects(prefix)
+  } catch (error) {
+    console.error(`Não foi possível listar os objetos de ${prefix} no bucket:`, error)
+    if (previousKey) await deleteQuietly(previousKey)
+    return
+  }
+
+  const now = Date.now()
+  const orphans = objects
+    .filter(({ key }) => key !== keepKey)
+    .filter(
+      ({ key, lastModified }) =>
+        key === previousKey || now - lastModified.getTime() > ORPHAN_AGE_MS,
+    )
+  await Promise.all(orphans.map(({ key }) => deleteQuietly(key)))
 }
 
-// The database is already right at this point: a failed delete only leaves an orphan object.
+// The database is already right at this point: a failed delete only leaves an orphan object, which
+// the next `cleanUp` removes.
 async function deleteQuietly(key: string) {
   try {
     await storage.deleteObject(key)
