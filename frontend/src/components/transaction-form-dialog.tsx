@@ -1,10 +1,11 @@
 import { useApolloClient, useMutation, useQuery } from '@apollo/client/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CircleArrowDown, CircleArrowUp, type LucideIcon, X } from 'lucide-react'
+import { CircleArrowDown, CircleArrowUp, type LucideIcon, Plus, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { Button } from '@/components/button'
+import { CategoryFormDialog } from '@/components/category-form-dialog'
 import { DateField } from '@/components/date-field'
 import { IconButton } from '@/components/icon-button'
 import { Input } from '@/components/input'
@@ -122,6 +123,7 @@ function TransactionForm({ transaction, onSavingChange, onDone }: TransactionFor
   const [updateTransaction] = useMutation(UPDATE_TRANSACTION_MUTATION)
 
   const categories = categoriesData?.categories
+  const [isCategoryFormOpen, setIsCategoryFormOpen] = useState(false)
 
   const {
     control,
@@ -129,6 +131,7 @@ function TransactionForm({ transaction, onSavingChange, onDone }: TransactionFor
     handleSubmit,
     setError,
     setFocus,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
@@ -195,108 +198,134 @@ function TransactionForm({ transaction, onSavingChange, onDone }: TransactionFor
   }
 
   return (
-    <form noValidate onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-      <div className="flex flex-col gap-4">
-        <fieldset className="grid min-w-0 grid-cols-2 rounded-xl border border-gray-200 p-2">
-          <legend className="sr-only">Tipo</legend>
-          {TYPE_OPTIONS.map((option) => (
-            // O radio nativo fica invisível dentro do label; seleção e foco são estilizados com `:has`.
-            <label
-              key={option.value}
-              className={cn(
-                'group/option relative flex h-[46px] cursor-pointer items-center justify-center gap-3 rounded-lg border border-transparent text-base text-gray-600 transition-colors',
-                'has-[:checked]:bg-gray-100 has-[:checked]:font-medium has-[:checked]:text-gray-800',
-                'has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand-base has-[:focus-visible]:outline-offset-2',
-                option.selectedClasses,
+    <>
+      <form noValidate onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
+          <fieldset className="grid min-w-0 grid-cols-2 rounded-xl border border-gray-200 p-2">
+            <legend className="sr-only">Tipo</legend>
+            {TYPE_OPTIONS.map((option) => (
+              // O radio nativo fica invisível dentro do label; seleção e foco são estilizados com `:has`.
+              <label
+                key={option.value}
+                className={cn(
+                  'group/option relative flex h-[46px] cursor-pointer items-center justify-center gap-3 rounded-lg border border-transparent text-base text-gray-600 transition-colors',
+                  'has-[:checked]:bg-gray-100 has-[:checked]:font-medium has-[:checked]:text-gray-800',
+                  'has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-brand-base has-[:focus-visible]:outline-offset-2',
+                  option.selectedClasses,
+                )}
+              >
+                <input
+                  type="radio"
+                  value={option.value}
+                  className="sr-only"
+                  {...register('type')}
+                />
+                <option.icon
+                  className={cn('size-4 shrink-0 text-gray-400', option.iconClasses)}
+                  aria-hidden
+                />
+                {option.label}
+              </label>
+            ))}
+          </fieldset>
+
+          <Input
+            label="Descrição"
+            placeholder="Ex. Almoço no restaurante"
+            autoComplete="off"
+            error={errors.description?.message}
+            {...register('description')}
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+            <Controller
+              control={control}
+              name="date"
+              render={({ field }) => (
+                <DateField
+                  label="Data"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  error={errors.date?.message}
+                />
               )}
-            >
-              <input type="radio" value={option.value} className="sr-only" {...register('type')} />
-              <option.icon
-                className={cn('size-4 shrink-0 text-gray-400', option.iconClasses)}
-                aria-hidden
-              />
-              {option.label}
-            </label>
-          ))}
-        </fieldset>
+            />
+            <Controller
+              control={control}
+              name="amount"
+              render={({ field }) => (
+                <Input
+                  label="Valor"
+                  prefix="R$"
+                  placeholder="0,00"
+                  inputMode="numeric"
+                  autoComplete="off"
+                  error={errors.amount?.message}
+                  ref={field.ref}
+                  name={field.name}
+                  onBlur={field.onBlur}
+                  // O formulário guarda centavos inteiros; o texto é só a máscara.
+                  value={formatCentsInput(field.value)}
+                  onChange={(event) => {
+                    const cents = parseCentsInput(event.target.value)
+                    // Acima de R$ 10.000.000,00 a digitação é ignorada.
+                    if (cents <= MAX_AMOUNT_CENTS) field.onChange(cents)
+                  }}
+                />
+              )}
+            />
+          </div>
 
-        <Input
-          label="Descrição"
-          placeholder="Ex. Almoço no restaurante"
-          autoComplete="off"
-          error={errors.description?.message}
-          {...register('description')}
-        />
-
-        <div className="grid grid-cols-2 gap-4">
-          <Controller
-            control={control}
-            name="date"
-            render={({ field }) => (
-              <DateField
-                label="Data"
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                error={errors.date?.message}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="amount"
-            render={({ field }) => (
-              <Input
-                label="Valor"
-                prefix="R$"
-                placeholder="0,00"
-                inputMode="numeric"
-                autoComplete="off"
-                error={errors.amount?.message}
-                ref={field.ref}
-                name={field.name}
-                onBlur={field.onBlur}
-                // O formulário guarda centavos inteiros; o texto é só a máscara.
-                value={formatCentsInput(field.value)}
-                onChange={(event) => {
-                  const cents = parseCentsInput(event.target.value)
-                  // Acima de R$ 10.000.000,00 a digitação é ignorada.
-                  if (cents <= MAX_AMOUNT_CENTS) field.onChange(cents)
-                }}
-              />
-            )}
-          />
+          <div className="flex items-start gap-2">
+            <Controller
+              control={control}
+              name="categoryId"
+              render={({ field }) => (
+                <Select
+                  label="Categoria"
+                  placeholder="Selecione"
+                  options={(categories ?? []).map((category) => ({
+                    value: category.id,
+                    label: category.title,
+                  }))}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={!categories}
+                  error={errors.categoryId?.message}
+                  emptyContent={
+                    <div className="flex flex-col items-start gap-2">
+                      <p className="text-gray-500 text-sm">Nenhuma categoria cadastrada</p>
+                      <Link to="/categorias">Criar categoria</Link>
+                    </div>
+                  }
+                />
+              )}
+            />
+            {/* `mt-7` pula o label (20px + gap de 8px) e alinha o botão com a caixa do campo. */}
+            <IconButton
+              icon={Plus}
+              aria-label="Nova categoria"
+              className="mt-7 size-12"
+              disabled={isSubmitting}
+              onClick={() => setIsCategoryFormOpen(true)}
+            />
+          </div>
         </div>
 
-        <Controller
-          control={control}
-          name="categoryId"
-          render={({ field }) => (
-            <Select
-              label="Categoria"
-              placeholder="Selecione"
-              options={(categories ?? []).map((category) => ({
-                value: category.id,
-                label: category.title,
-              }))}
-              value={field.value}
-              onValueChange={field.onChange}
-              disabled={!categories}
-              error={errors.categoryId?.message}
-              emptyContent={
-                <div className="flex flex-col items-start gap-2">
-                  <p className="text-gray-500 text-sm">Nenhuma categoria cadastrada</p>
-                  <Link to="/categorias">Criar categoria</Link>
-                </div>
-              }
-            />
-          )}
-        />
-      </div>
+        <Button type="submit" fullWidth disabled={isSubmitting}>
+          {isSubmitting ? 'Salvando...' : 'Salvar'}
+        </Button>
+      </form>
 
-      <Button type="submit" fullWidth disabled={isSubmitting}>
-        {isSubmitting ? 'Salvando...' : 'Salvar'}
-      </Button>
-    </form>
+      {/* Fora do <form>: o submit do modal de categoria subiria pela árvore do React até ele. */}
+      <CategoryFormDialog
+        open={isCategoryFormOpen}
+        category={null}
+        onOpenChange={setIsCategoryFormOpen}
+        // A lista já foi refeita: a categoria nova entra selecionada.
+        onCreated={(category) => setValue('categoryId', category.id, { shouldValidate: true })}
+      />
+    </>
   )
 }
