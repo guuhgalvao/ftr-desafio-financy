@@ -6,6 +6,7 @@ export const UPDATE_PROFILE_MUTATION = graphql(`
       id
       name
       email
+      avatarUrl
     }
   }
 `)

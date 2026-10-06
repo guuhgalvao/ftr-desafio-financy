@@ -15,6 +15,7 @@ const focusRing =
 
 export function Navbar() {
   const name = useAuthStore((state) => state.user?.name ?? '')
+  const avatarUrl = useAuthStore((state) => state.user?.avatarUrl)
 
   return (
     // O fundo e a borda ocupam a tela toda; o conteúdo segue o mesmo limite do Main (1280px).
@@ -49,7 +50,7 @@ export function Navbar() {
           aria-label="Perfil"
           className={cn('justify-self-end rounded-full', focusRing)}
         >
-          <Avatar name={name} />
+          <Avatar name={name} src={avatarUrl} />
         </Link>
       </div>
     </header>

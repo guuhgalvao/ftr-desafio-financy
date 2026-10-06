@@ -18,13 +18,13 @@ type Documents = {
     "\n  mutation CreateTransaction($data: TransactionInput!) {\n    createTransaction(data: $data) {\n      id\n      description\n      amount\n      type\n      date\n      category {\n        id\n        title\n        icon\n        color\n      }\n    }\n  }\n": typeof types.CreateTransactionDocument,
     "\n  mutation DeleteCategory($id: ID!) {\n    deleteCategory(id: $id)\n  }\n": typeof types.DeleteCategoryDocument,
     "\n  mutation DeleteTransaction($id: ID!) {\n    deleteTransaction(id: $id)\n  }\n": typeof types.DeleteTransactionDocument,
-    "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": typeof types.LoginDocument,
-    "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": typeof types.RegisterDocument,
+    "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n        avatarUrl\n      }\n    }\n  }\n": typeof types.LoginDocument,
+    "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n        avatarUrl\n      }\n    }\n  }\n": typeof types.RegisterDocument,
     "\n  mutation UpdateCategory($id: ID!, $data: CategoryInput!) {\n    updateCategory(id: $id, data: $data) {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n": typeof types.UpdateCategoryDocument,
-    "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n": typeof types.UpdateProfileDocument,
+    "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n      avatarUrl\n    }\n  }\n": typeof types.UpdateProfileDocument,
     "\n  mutation UpdateTransaction($id: ID!, $data: TransactionInput!) {\n    updateTransaction(id: $id, data: $data) {\n      id\n      description\n      amount\n      type\n      date\n      category {\n        id\n        title\n        icon\n        color\n      }\n    }\n  }\n": typeof types.UpdateTransactionDocument,
     "\n  query Categories {\n    categories {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n": typeof types.CategoriesDocument,
-    "\n  query Me {\n    me {\n      id\n      name\n      email\n      createdAt\n    }\n  }\n": typeof types.MeDocument,
+    "\n  query Me {\n    me {\n      id\n      name\n      email\n      avatarUrl\n      createdAt\n    }\n  }\n": typeof types.MeDocument,
     "\n  query Summary($period: PeriodInput!) {\n    summary(period: $period) {\n      balance\n      income\n      expense\n    }\n  }\n": typeof types.SummaryDocument,
     "\n  query Transactions($filter: TransactionFilterInput, $pagination: PaginationInput) {\n    transactions(filter: $filter, pagination: $pagination) {\n      items {\n        id\n        description\n        amount\n        type\n        date\n        category {\n          id\n          title\n          icon\n          color\n        }\n      }\n      total\n      page\n      perPage\n    }\n  }\n": typeof types.TransactionsDocument,
 };
@@ -33,13 +33,13 @@ const documents: Documents = {
     "\n  mutation CreateTransaction($data: TransactionInput!) {\n    createTransaction(data: $data) {\n      id\n      description\n      amount\n      type\n      date\n      category {\n        id\n        title\n        icon\n        color\n      }\n    }\n  }\n": types.CreateTransactionDocument,
     "\n  mutation DeleteCategory($id: ID!) {\n    deleteCategory(id: $id)\n  }\n": types.DeleteCategoryDocument,
     "\n  mutation DeleteTransaction($id: ID!) {\n    deleteTransaction(id: $id)\n  }\n": types.DeleteTransactionDocument,
-    "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": types.LoginDocument,
-    "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n": types.RegisterDocument,
+    "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n        avatarUrl\n      }\n    }\n  }\n": types.LoginDocument,
+    "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n        avatarUrl\n      }\n    }\n  }\n": types.RegisterDocument,
     "\n  mutation UpdateCategory($id: ID!, $data: CategoryInput!) {\n    updateCategory(id: $id, data: $data) {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n": types.UpdateCategoryDocument,
-    "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n": types.UpdateProfileDocument,
+    "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n      avatarUrl\n    }\n  }\n": types.UpdateProfileDocument,
     "\n  mutation UpdateTransaction($id: ID!, $data: TransactionInput!) {\n    updateTransaction(id: $id, data: $data) {\n      id\n      description\n      amount\n      type\n      date\n      category {\n        id\n        title\n        icon\n        color\n      }\n    }\n  }\n": types.UpdateTransactionDocument,
     "\n  query Categories {\n    categories {\n      id\n      title\n      description\n      icon\n      color\n      transactionsCount\n      totalAmount\n    }\n  }\n": types.CategoriesDocument,
-    "\n  query Me {\n    me {\n      id\n      name\n      email\n      createdAt\n    }\n  }\n": types.MeDocument,
+    "\n  query Me {\n    me {\n      id\n      name\n      email\n      avatarUrl\n      createdAt\n    }\n  }\n": types.MeDocument,
     "\n  query Summary($period: PeriodInput!) {\n    summary(period: $period) {\n      balance\n      income\n      expense\n    }\n  }\n": types.SummaryDocument,
     "\n  query Transactions($filter: TransactionFilterInput, $pagination: PaginationInput) {\n    transactions(filter: $filter, pagination: $pagination) {\n      items {\n        id\n        description\n        amount\n        type\n        date\n        category {\n          id\n          title\n          icon\n          color\n        }\n      }\n      total\n      page\n      perPage\n    }\n  }\n": types.TransactionsDocument,
 };
@@ -77,11 +77,11 @@ export function graphql(source: "\n  mutation DeleteTransaction($id: ID!) {\n   
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n        avatarUrl\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Login($data: LoginInput!) {\n    login(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n        avatarUrl\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n        avatarUrl\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Register($data: RegisterInput!) {\n    register(data: $data) {\n      token\n      user {\n        id\n        name\n        email\n        avatarUrl\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -89,7 +89,7 @@ export function graphql(source: "\n  mutation UpdateCategory($id: ID!, $data: Ca
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n    }\n  }\n"];
+export function graphql(source: "\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n      avatarUrl\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateProfile($data: UpdateProfileInput!) {\n    updateProfile(data: $data) {\n      id\n      name\n      email\n      avatarUrl\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -101,7 +101,7 @@ export function graphql(source: "\n  query Categories {\n    categories {\n     
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Me {\n    me {\n      id\n      name\n      email\n      createdAt\n    }\n  }\n"): (typeof documents)["\n  query Me {\n    me {\n      id\n      name\n      email\n      createdAt\n    }\n  }\n"];
+export function graphql(source: "\n  query Me {\n    me {\n      id\n      name\n      email\n      avatarUrl\n      createdAt\n    }\n  }\n"): (typeof documents)["\n  query Me {\n    me {\n      id\n      name\n      email\n      avatarUrl\n      createdAt\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

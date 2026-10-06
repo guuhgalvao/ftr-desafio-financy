@@ -295,6 +295,11 @@ export default function StyleguidePage() {
           <Avatar name="Conta teste" size="lg" />
           <Avatar name="Ana" />
         </Row>
+        <Row label="Com foto / foto que não carrega">
+          <Avatar name="Conta teste" src="/favicon.svg" />
+          <Avatar name="Conta teste" src="/favicon.svg" size="lg" />
+          <Avatar name="Conta teste" src="/nao-existe.png" />
+        </Row>
       </Section>
 
       <Section title="Checkbox">

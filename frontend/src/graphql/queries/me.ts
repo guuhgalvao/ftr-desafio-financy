@@ -6,6 +6,7 @@ export const ME_QUERY = graphql(`
       id
       name
       email
+      avatarUrl
       createdAt
     }
   }

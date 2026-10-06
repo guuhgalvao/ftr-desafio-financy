@@ -1,15 +1,18 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware'
 
-export type SessionUser = { id: string; name: string; email: string }
+export type SessionUser = { id: string; name: string; email: string; avatarUrl: string | null }
+
+// O que o Apollo devolve: `avatarUrl` pode vir ausente (campo anulável do schema).
+type SessionUserInput = Omit<SessionUser, 'avatarUrl'> & { avatarUrl?: string | null }
 
 type AuthState = {
   token: string | null
   user: SessionUser | null
   /** "Lembrar-me": `true` guarda a sessão no localStorage; `false`, no sessionStorage. */
   remember: boolean
-  signIn: (session: { token: string; user: SessionUser }, remember: boolean) => void
-  updateUser: (user: SessionUser) => void
+  signIn: (session: { token: string; user: SessionUserInput }, remember: boolean) => void
+  updateUser: (user: SessionUserInput) => void
   signOut: () => void
 }
 
@@ -30,8 +33,8 @@ const sessionStorageByRemember: StateStorage = {
 }
 
 // Guarda só os campos da sessão: o retorno do Apollo traz `__typename` e outros campos junto.
-function toSessionUser({ id, name, email }: SessionUser): SessionUser {
-  return { id, name, email }
+function toSessionUser({ id, name, email, avatarUrl }: SessionUserInput): SessionUser {
+  return { id, name, email, avatarUrl: avatarUrl ?? null }
 }
 
 export const useAuthStore = create<AuthState>()(
