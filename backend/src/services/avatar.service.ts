@@ -62,7 +62,9 @@ export async function updateAvatar(userId: string, key: string) {
   const isValidType = Object.hasOwn(EXTENSIONS, object.contentType)
   if (!isValidType || object.contentLength > MAX_SIZE) {
     await deleteQuietly(key)
-    throw badUserInput(isValidType ? INVALID_SIZE : INVALID_TYPE)
+    throw isValidType
+      ? badUserInput(INVALID_SIZE, 'contentLength')
+      : badUserInput(INVALID_TYPE, 'contentType')
   }
 
   const current = await getUser(userId)
