@@ -3,6 +3,12 @@ import { z } from 'zod'
 const envSchema = z.object({
   JWT_SECRET: z.string().min(1),
   DATABASE_URL: z.string().min(1),
+  CLOUDFLARE_ACCOUNT_ID: z.string().min(1),
+  CLOUDFLARE_ACCESS_KEY_ID: z.string().min(1),
+  CLOUDFLARE_SECRET_ACCESS_KEY: z.string().min(1),
+  CLOUDFLARE_BUCKET: z.string().min(1),
+  // Stored without the trailing slash: object URLs are built as `${CLOUDFLARE_PUBLIC_URL}/${key}`.
+  CLOUDFLARE_PUBLIC_URL: z.url().transform((url) => url.replace(/\/+$/, '')),
 })
 
 const parsed = envSchema.safeParse(process.env)
